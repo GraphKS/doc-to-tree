@@ -1,4 +1,6 @@
-import {Context} from "../Runner/Runner";
+export interface Context {
+    [key: string]: any
+}
 
 interface ActionOptions {
     id: string
@@ -44,4 +46,6 @@ export abstract class Action {
     }
 
     protected abstract executeWithinContext(ctx: Context): any
+
+    public abstract exportToText(ctx: Context): string
 }
