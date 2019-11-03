@@ -1,0 +1,23 @@
+{
+  "name": "logtopus-oss",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PPACI/logtopus-oss.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/PPACI/logtopus-oss/issues"
+  },
+  "homepage": "https://github.com/PPACI/logtopus-oss#readme",
+  "devDependencies": {
+    "typescript": "^3.6.4"
+  }
+}
