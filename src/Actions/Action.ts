@@ -12,7 +12,7 @@ export abstract class Action {
     public readonly id: string;
     public readonly description: string;
     public readonly title: string;
-    protected readonly _connections: Array<Action> = [];
+    protected readonly _nextActions: Array<Action> = [];
     public readonly includeInExport: boolean;
 
     constructor({id, description, title, includeInExport = true}: ActionOptions) {
@@ -22,16 +22,16 @@ export abstract class Action {
         this.includeInExport = includeInExport;
     }
 
-    public addConnection(action: Action) {
-        this._connections.push(action);
+    public connectBefore(action: Action) {
+        this._nextActions.push(action);
     }
 
-    get connections(): Array<Action> {
-        return this._connections;
+    get nextActions(): Array<Action> {
+        return this._nextActions;
     }
 
-    public connect(node: Action): Action {
-        node.addConnection(this);
+    public connectAfter(node: Action): Action {
+        node.connectBefore(this);
         return this
     }
 
