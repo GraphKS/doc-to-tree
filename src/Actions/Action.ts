@@ -6,6 +6,9 @@ interface ActionOptions {
     title: string
 }
 
+// Should action have a method to execute themselves or should they be agnostic and execution information all contained
+// in the runner ?
+// Maybe create Subtype like InteractiveActions to be runned by InteractiveRunner ?
 export class Action {
 
     public id: string;
