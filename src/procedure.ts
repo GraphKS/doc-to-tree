@@ -1,4 +1,4 @@
-import {Action} from "./Actions/Action";
+import {Action, Context} from "./Actions/Action";
 
 interface ProcedureOptions {
     name: string,
@@ -16,30 +16,27 @@ export class Procedure {
     public authors: Array<string>;
     public creationTimestamp: number;
 
-    private _actions: Array<Action> = [];
-    private _connections: { [from: string]: Array<Action> } = {};
+    private start: Action;
 
     constructor({name, description, authors, creationTimestamp, start, ends}: ProcedureOptions) {
         this.name = name;
         this.description = description;
         this.authors = authors;
         this.creationTimestamp = creationTimestamp;
-        this.createGraph(start, ends)
+        this.start = start;
+        this.checkGraph(start, ends);
     }
 
-    get connections(): { [p: string]: Array<Action> } {
-        return this._connections;
-    }
-
-    public getConnectionFor(action: Action): Array<Action> {
+    private checkGraph(start: Action, ends: Array<Action>) {
+        // Check that graph is not disconnected, is acyclic, etc...
         throw new Error("Not implemented");
     }
 
-    get actions(): Array<Action> {
-        return this._actions;
+    public async execute(): Promise<Context> {
+        return await this.start.next({});
     }
 
-    private createGraph(start: Action, ends: Array<Action>) {
-        throw new Error("Not implemented");
+    public async export(): Promise<string> {
+        return await this.start.nextExport("");
     }
 }

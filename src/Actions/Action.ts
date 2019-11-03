@@ -14,7 +14,7 @@ export abstract class Action {
     public readonly id: string;
     public readonly description: string;
     public readonly title: string;
-    protected readonly _nextActions: Array<Action> = [];
+    protected _nextAction?: Action;
     public readonly includeInExport: boolean;
 
     constructor({id, description, title, includeInExport = true}: ActionOptions) {
@@ -25,27 +25,45 @@ export abstract class Action {
     }
 
     public connectBefore(action: Action) {
-        this._nextActions.push(action);
+        this._nextAction = action;
     }
 
-    get nextActions(): Array<Action> {
-        return this._nextActions;
+    get nextAction(): Action | undefined {
+        return this._nextAction;
     }
 
     public connectAfter(node: Action): Action {
         node.connectBefore(this);
-        return this
+        return this;
     }
 
-    public run(ctx: Context): Context {
+    protected abstract async execute(ctx: Context): Promise<any>
+
+    public async next(ctx: Context): Promise<Context> {
         if (ctx.hasOwnProperty(this.id)) {
-            throw new Error(`ContextError. ${this.id} is already in context.`)
+            throw new Error(`ContextError. ${this.id} is already in context.`);
         }
-        ctx[this.id] = this.executeWithinContext(ctx);
-        return ctx;
+        const newCtx = {...ctx};
+        newCtx[this.id] = await this.execute(newCtx);
+        if (this.nextAction == undefined) {
+            // End of the graph
+            return newCtx;
+        } else {
+            // continue to execute the graph
+            return await this.nextAction.next(newCtx);
+        }
     }
 
-    protected abstract executeWithinContext(ctx: Context): any
+    public async nextExport(existingDoc: string): Promise<string> {
+        const newDoc = existingDoc.concat("\n", await this.exportToText());
+        if (this.nextAction == undefined) {
+            // End of the graph
+            return newDoc;
+        } else {
+            // continue to execute the graph
+            return await this.nextAction.nextExport(newDoc);
+        }
+    }
 
-    public abstract exportToText(ctx: Context): string
+    public abstract async exportToText(): Promise<string>
 }
