@@ -53,17 +53,4 @@ export abstract class Action {
             return await this.nextAction.next(newCtx);
         }
     }
-
-    public async nextExport(existingDoc: string): Promise<string> {
-        const newDoc = existingDoc.concat("\n", await this.exportToText());
-        if (this.nextAction == undefined) {
-            // End of the graph
-            return newDoc;
-        } else {
-            // continue to execute the graph
-            return await this.nextAction.nextExport(newDoc);
-        }
-    }
-
-    public abstract async exportToText(): Promise<string>
 }
