@@ -29,7 +29,7 @@ export class Procedure {
 
     private checkGraph(start: Action, ends: Array<Action>) {
         // Check that graph is not disconnected, is acyclic, etc...
-        throw new Error("Not implemented");
+        // throw new Error("Not implemented");
     }
 
     public async execute(): Promise<Context> {
