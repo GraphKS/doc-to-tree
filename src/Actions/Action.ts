@@ -2,7 +2,7 @@ export interface Context {
     [key: string]: any
 }
 
-interface ActionOptions {
+export interface ActionOptions {
     id: string
     description: string
     title: string
