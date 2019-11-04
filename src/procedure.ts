@@ -35,8 +35,4 @@ export class Procedure {
     public async execute(): Promise<Context> {
         return await this.start.next({});
     }
-
-    public async export(): Promise<string> {
-        return await this.start.nextExport("");
-    }
 }
