@@ -25,6 +25,9 @@ export abstract class Action {
     }
 
     public connectBefore(action: Action) {
+        if (this._nextAction !== undefined) {
+            throw new Error(`Action Error. This node is already connected to ${this._nextAction.id}`);
+        }
         this._nextAction = action;
     }
 

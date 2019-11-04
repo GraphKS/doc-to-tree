@@ -22,5 +22,9 @@
     "jest": "^24.9.0",
     "ts-jest": "^24.1.0",
     "typescript": "^3.6.4"
+  },
+  "dependencies": {
+    "@types/graphlib": "^2.1.5",
+    "graphlib": "^2.1.7"
   }
 }

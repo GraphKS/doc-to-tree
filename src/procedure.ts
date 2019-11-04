@@ -1,4 +1,6 @@
 import {Action, Context} from "./Actions/Action";
+import {alg, Graph} from "graphlib";
+import {MultiOutputAction} from "./Actions/MultiOutputAction";
 
 interface ProcedureOptions {
     name: string,
@@ -24,12 +26,56 @@ export class Procedure {
         this.authors = authors;
         this.creationTimestamp = creationTimestamp;
         this.start = start;
-        this.checkGraph(start, ends);
+        this.ensureAcyclic(start, ends);
     }
 
-    private checkGraph(start: Action, ends: Array<Action>) {
-        // Check that graph is not disconnected, is acyclic, etc...
-        // throw new Error("Not implemented");
+    private ensureAcyclic(start: Action, ends: Array<Action>) {
+        const graph = new Graph();
+        let nodeToExplore = [start];
+        let i = 0;
+        while (true) {
+            if (nodeToExplore.length <= i) {
+                break;
+            }
+            let node: Action = nodeToExplore[i];
+            let childrens: Array<Action> = [];
+            // Get all childrens if multi output
+            if (node instanceof MultiOutputAction) {
+                Object.values(node.outputs).forEach(n => childrens.push(n));
+            }
+            // Get children
+            else if (node.nextAction) {
+                childrens.push(node.nextAction);
+            }
+            // Add self and children into graph
+            if (!graph.hasNode(node.id)) {
+                graph.setNode(node.id);
+            }
+            childrens.forEach(c => {
+                    if (!graph.hasNode(c.id)) {
+                        graph.setNode(c.id);
+                    }
+                }
+            );
+            // Add edge
+            childrens.forEach(c => graph.setEdge(node.id, c.id));
+            // Explore children
+            childrens.forEach(c => {
+                if (nodeToExplore.indexOf(c) == -1)
+                    nodeToExplore.push(c);
+            });
+            // increment counter
+            i++;
+        }
+        if (!alg.isAcyclic(graph)) {
+            throw new Error("Graph Error. This graph is cyclic");
+        }
+        ends.forEach(e => {
+            if (!graph.hasNode(e.id)) {
+                throw new Error(`Graph Error. This graph doesn't end with ${e.id}`);
+            }
+        });
+
     }
 
     public async execute(): Promise<Context> {

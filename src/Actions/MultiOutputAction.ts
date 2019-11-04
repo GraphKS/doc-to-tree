@@ -5,8 +5,8 @@ export interface ConditionOptions extends ActionOptions {
     outputs: Array<string>
 }
 
-export abstract class Condition extends Action {
-    protected outputs: { [id: string]: Action };
+export abstract class MultiOutputAction extends Action {
+    public outputs: { [id: string]: Action };
 
     constructor({outputs, ...opts}: ConditionOptions) {
         super(opts);
