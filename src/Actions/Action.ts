@@ -4,22 +4,25 @@ export interface Context {
 
 export interface ActionOptions {
     id: string
-    description: string
-    title: string
-    includeInExport: boolean
+    description?: string
+    comments?: string
+    title?: string
+    includeInExport?: boolean
 }
 
 export abstract class Action {
 
     public readonly id: string;
     public readonly description: string;
+    public readonly comments: string;
     public readonly title: string;
     protected _nextAction?: Action;
     public readonly includeInExport: boolean;
 
-    constructor({id, description, title, includeInExport = true}: ActionOptions) {
+    constructor({id, description = "", title = id, comments = "", includeInExport = true}: ActionOptions) {
         this.id = id;
         this.description = description;
+        this.comments = comments;
         this.title = title;
         this.includeInExport = includeInExport;
     }

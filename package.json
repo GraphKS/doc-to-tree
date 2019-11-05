@@ -25,6 +25,7 @@
   },
   "dependencies": {
     "@types/graphlib": "^2.1.5",
-    "graphlib": "^2.1.7"
+    "graphlib": "^2.1.7",
+    "handlebars": "^4.5.1"
   }
 }
