@@ -1,6 +1,7 @@
 import {PassiveAction} from "../src/Actions/PassiveAction";
 import {Procedure} from "../src/procedure";
 import {MarkdowExporter} from "../src/Exporter/MarkdowExporter";
+import {Edge} from "../src/Edge/Edge";
 
 function createSimpleProcedure(): Procedure {
     const start = new PassiveAction({
@@ -9,13 +10,20 @@ function createSimpleProcedure(): Procedure {
         description: "Do nothing to start",
         includeInExport: true
     });
+    const mid = new PassiveAction({
+        id: "mid",
+        title: "mid",
+        description: "Do nothing to mid",
+        includeInExport: true
+    });
     const end = new PassiveAction({
         id: "end",
         title: "bar",
         description: "Do nothing to end",
         includeInExport: true
     });
-    start.addDirectEdge(end);
+    start.addDirectEdge(mid);
+    mid.addEdge(new Edge(end, () => true, "You should end."));
     return new Procedure({
         name: "myProcedure",
         description: "simple test",
@@ -30,7 +38,7 @@ describe("MarkdownExporter", () => {
         const procedure = createSimpleProcedure();
         const exporter = new MarkdowExporter(procedure);
         const actions = exporter["getActionOrder"]();  // This is a private method
-        expect(actions).toStrictEqual([procedure.start, procedure.ends[0]]);
+        expect(actions).toStrictEqual([procedure.start, procedure.start.edges[0].target, procedure.ends[0]]);
     });
     test("it generate markdown", () => {
         const procedure = createSimpleProcedure();
@@ -41,6 +49,8 @@ describe("MarkdownExporter", () => {
         expect(documentation).toMatch("* Logtopus");
         expect(documentation).toMatch("simple test");
         expect(documentation).toMatch("## foo");
+        expect(documentation).toMatch("## mid");
+        expect(documentation).toMatch("You should end.");
         expect(documentation).toMatch("## bar");
         console.log(documentation);
     });
