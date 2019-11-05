@@ -1,11 +1,12 @@
 import {Procedure} from "../src/procedure";
 import {PassiveAction} from "../src/Actions/PassiveAction";
+import {DirectEdge, Edge} from "../src/Edge/Edge";
 
 describe("Procedure", () => {
     test("it allow trivial procedure", async () => {
         const start = new PassiveAction({id: "start", title: "foo", includeInExport: true, description: ""});
         const end = new PassiveAction({id: "end", title: "bar", includeInExport: true, description: ""});
-        end.connectAfter(start);
+        start.addDirectEdge(end);
         const procedure = new Procedure({
             name: "myTestProcedure",
             description: "",
@@ -15,15 +16,15 @@ describe("Procedure", () => {
             ends: [end]
         });
         expect(procedure.name).toBe("myTestProcedure");
-        expect(start.nextAction).toBe(end);
+        expect(start.edges[0].target).toBe(end);
     });
 
     test("it doesn't allow cyclic", async () => {
         const start = new PassiveAction({id: "start", title: "foo", includeInExport: true, description: ""});
         const end = new PassiveAction({id: "end", title: "bar", includeInExport: true, description: ""});
 
-        start.connectAfter(end);
-        end.connectAfter(start);
+        start.addDirectEdge(end);
+        end.addDirectEdge(start);
 
         expect(() => {
             new Procedure({
@@ -40,7 +41,7 @@ describe("Procedure", () => {
     test("it run trivial procedure", async () => {
         const start = new PassiveAction({id: "start", title: "foo", includeInExport: true, description: ""});
         const end = new PassiveAction({id: "end", title: "bar", includeInExport: true, description: ""});
-        end.connectAfter(start);
+        start.addDirectEdge(end);
         const procedure = new Procedure({
             name: "myTestProcedure",
             description: "",

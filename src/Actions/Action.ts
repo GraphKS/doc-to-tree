@@ -1,3 +1,5 @@
+import {DirectEdge, Edge} from "../Edge/Edge";
+
 export interface Context {
     [key: string]: any
 }
@@ -11,12 +13,12 @@ export interface ActionOptions {
 }
 
 export abstract class Action {
-
     public readonly id: string;
     public readonly description: string;
     public readonly comments: string;
     public readonly title: string;
-    protected _nextAction?: Action;
+    private _edges: Array<Edge> = [];
+    private targets: Array<Action> = [];
     public readonly includeInExport: boolean;
 
     constructor({id, description = "", title = id, comments = "", includeInExport = true}: ActionOptions) {
@@ -27,20 +29,18 @@ export abstract class Action {
         this.includeInExport = includeInExport;
     }
 
-    public connectBefore(action: Action) {
-        if (this._nextAction !== undefined) {
-            throw new Error(`Action Error. This node is already connected to ${this._nextAction.id}`);
-        }
-        this._nextAction = action;
+    get edges(): Array<Edge> {
+        return [...this._edges];
     }
 
-    get nextAction(): Action | undefined {
-        return this._nextAction;
+    public addEdge(edge: Edge) {
+        this._edges.push(edge);
+        if (this.targets.indexOf(edge.target) != -1) throw new Error(`Action Error. Node ${this.id} is already connected to ${edge.target.id}`);
+        this.targets.push(edge.target);
     }
 
-    public connectAfter(node: Action): Action {
-        node.connectBefore(this);
-        return this;
+    public addDirectEdge(target: Action) {
+        this.addEdge(new DirectEdge(target));
     }
 
     protected abstract async execute(ctx: Context): Promise<any>
@@ -49,14 +49,18 @@ export abstract class Action {
         if (ctx.hasOwnProperty(this.id)) {
             throw new Error(`ContextError. ${this.id} is already in context.`);
         }
-        const newCtx = {...ctx};
-        newCtx[this.id] = await this.execute(newCtx);
-        if (this.nextAction == undefined) {
+        ctx[this.id] = await this.execute(ctx);
+        if (!this._edges) {
             // End of the graph
-            return newCtx;
+            return ctx;
         } else {
             // continue to execute the graph
-            return await this.nextAction.next(newCtx);
+            for (const edge of this._edges) {
+                if (edge.test(ctx)) {
+                    await edge.target.next(ctx);
+                }
+            }
+            return ctx;
         }
     }
 }

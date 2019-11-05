@@ -1,6 +1,5 @@
 import {Action, Context} from "./Actions/Action";
 import {alg, Graph} from "graphlib";
-import {MultiOutputAction} from "./Actions/MultiOutputAction";
 
 interface ProcedureOptions {
     name: string,
@@ -43,14 +42,8 @@ export class Procedure {
             }
             let node: Action = nodeToExplore[i];
             let childrens: Array<Action> = [];
-            // Get all childrens if multi output
-            if (node instanceof MultiOutputAction) {
-                Object.values(node.outputs).forEach(n => childrens.push(n));
-            }
-            // Get children
-            else if (node.nextAction) {
-                childrens.push(node.nextAction);
-            }
+            // Get all possible targets
+            node.edges.forEach(n => childrens.push(n.target));
             // Add self and children into graph
             if (!graph.hasNode(node.id)) {
                 graph.setNode(node.id, node);

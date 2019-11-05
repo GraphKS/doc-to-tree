@@ -23,9 +23,15 @@ Written by
 
 {{comments}}
 {{/if}}
-{{#if nextAction}}
+{{#if edges}}
+Next step:
+{{#each edges}}
 
-Next step: [{{nextAction.title}}](#{{nextAction.title}})
+* [{{target.title}}](#{{target.title}})
+{{#if comment}}
+  * {{comment}}
+{{/if}}
+{{/each}}
 {{/if}}
 
 {{/each}}
@@ -48,7 +54,7 @@ export class MarkdowExporter extends Exporter {
                     title: action.title,
                     description: action.description,
                     comments: action.comments,
-                    nextAction: action.nextAction
+                    edges: action.edges
                 };
             }).filter(action => action !== null)
         };

@@ -15,7 +15,7 @@ function createSimpleProcedure(): Procedure {
         description: "Do nothing to end",
         includeInExport: true
     });
-    end.connectAfter(start);
+    start.addDirectEdge(end);
     return new Procedure({
         name: "myProcedure",
         description: "simple test",
