@@ -35,7 +35,7 @@ export abstract class Action {
 
     public addEdge(edge: Edge) {
         this._edges.push(edge);
-        if (this.targets.indexOf(edge.target) != -1) throw new Error(`Action Error. Node ${this.id} is already connected to ${edge.target.id}`);
+        if (this.targets.includes(edge.target)) throw new Error(`Action Error. Node ${this.id} is already connected to ${edge.target.id}`);
         this.targets.push(edge.target);
     }
 

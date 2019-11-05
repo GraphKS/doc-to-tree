@@ -58,7 +58,7 @@ export class Procedure {
             childrens.forEach(c => graph.setEdge(node.id, c.id));
             // Explore children
             childrens.forEach(c => {
-                if (nodeToExplore.indexOf(c) == -1)
+                if (!nodeToExplore.includes(c))
                     nodeToExplore.push(c);
             });
             // increment counter
