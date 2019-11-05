@@ -1,5 +1,6 @@
 import {Procedure} from "../procedure";
 import {Action} from "../Actions/Action";
+import {alg} from "graphlib";
 
 export abstract class Exporter {
     constructor(protected procedure: Procedure) {
@@ -7,7 +8,8 @@ export abstract class Exporter {
 
     protected getActionOrder(): Array<Action> {
         // Return a list or actions to export
-        throw new Error("Not implemented");
+        const ids = alg.preorder(this.procedure.graph, [this.procedure.start.id]);
+        return ids.map(id => this.procedure.graph.node(id));
     }
 
     public abstract export(): string

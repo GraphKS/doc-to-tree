@@ -4,9 +4,9 @@ import {MultiOutputAction} from "./Actions/MultiOutputAction";
 
 interface ProcedureOptions {
     name: string,
-    description: string,
-    authors: Array<string>,
-    creationTimestamp: number,
+    description?: string,
+    authors?: Array<string>,
+    creationTimestamp?: number,
     start: Action,
     ends: Array<Action>
 }
@@ -18,11 +18,11 @@ export class Procedure {
     public authors: Array<string>;
     public creationTimestamp: number;
 
-    private readonly start: Action;
-    private readonly ends: Array<Action>;
-    private readonly graph: Graph;
+    public readonly start: Action;
+    public readonly ends: Array<Action>;
+    public readonly graph: Graph;
 
-    constructor({name, description, authors, creationTimestamp, start, ends}: ProcedureOptions) {
+    constructor({name, description = "", authors = [], creationTimestamp = Date.now(), start, ends}: ProcedureOptions) {
         this.name = name;
         this.description = description;
         this.authors = authors;
@@ -57,7 +57,7 @@ export class Procedure {
             }
             childrens.forEach(c => {
                     if (!graph.hasNode(c.id)) {
-                        graph.setNode(c.id, node);
+                        graph.setNode(c.id, c);
                     }
                 }
             );
