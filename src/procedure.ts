@@ -18,7 +18,9 @@ export class Procedure {
     public authors: Array<string>;
     public creationTimestamp: number;
 
-    private start: Action;
+    private readonly start: Action;
+    private readonly ends: Array<Action>;
+    private readonly graph: Graph;
 
     constructor({name, description, authors, creationTimestamp, start, ends}: ProcedureOptions) {
         this.name = name;
@@ -26,12 +28,14 @@ export class Procedure {
         this.authors = authors;
         this.creationTimestamp = creationTimestamp;
         this.start = start;
-        this.ensureAcyclic(start, ends);
+        this.ends = ends;
+        this.graph = this.createGraph();
+        this.checkGraph();
     }
 
-    private ensureAcyclic(start: Action, ends: Array<Action>) {
+    private createGraph(): Graph {
         const graph = new Graph();
-        let nodeToExplore = [start];
+        let nodeToExplore = [this.start];
         let i = 0;
         while (true) {
             if (nodeToExplore.length <= i) {
@@ -49,11 +53,11 @@ export class Procedure {
             }
             // Add self and children into graph
             if (!graph.hasNode(node.id)) {
-                graph.setNode(node.id);
+                graph.setNode(node.id, node);
             }
             childrens.forEach(c => {
                     if (!graph.hasNode(c.id)) {
-                        graph.setNode(c.id);
+                        graph.setNode(c.id, node);
                     }
                 }
             );
@@ -67,15 +71,18 @@ export class Procedure {
             // increment counter
             i++;
         }
-        if (!alg.isAcyclic(graph)) {
+        return graph;
+    }
+
+    protected checkGraph() {
+        if (!alg.isAcyclic(this.graph)) {
             throw new Error("Graph Error. This graph is cyclic");
         }
-        ends.forEach(e => {
-            if (!graph.hasNode(e.id)) {
+        this.ends.forEach(e => {
+            if (!this.graph.hasNode(e.id)) {
                 throw new Error(`Graph Error. This graph doesn't end with ${e.id}`);
             }
         });
-
     }
 
     public async execute(): Promise<Context> {
