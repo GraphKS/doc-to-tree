@@ -1,17 +1,13 @@
 import {Procedure} from "../src/procedure";
 import {PassiveAction} from "../src/Actions/PassiveAction";
-import {DirectEdge, Edge} from "../src/Edge/Edge";
 
 describe("Procedure", () => {
     test("it allow trivial procedure", async () => {
-        const start = new PassiveAction({id: "start", title: "foo", includeInExport: true, description: ""});
-        const end = new PassiveAction({id: "end", title: "bar", includeInExport: true, description: ""});
+        const start = new PassiveAction({id: "start", title: "foo"});
+        const end = new PassiveAction({id: "end", title: "bar"});
         start.addDirectEdge(end);
         const procedure = new Procedure({
             name: "myTestProcedure",
-            description: "",
-            authors: ["Pierre"],
-            creationTimestamp: Date.now(),
             start: start,
             ends: [end]
         });
@@ -20,8 +16,8 @@ describe("Procedure", () => {
     });
 
     test("it doesn't allow cyclic", async () => {
-        const start = new PassiveAction({id: "start", title: "foo", includeInExport: true, description: ""});
-        const end = new PassiveAction({id: "end", title: "bar", includeInExport: true, description: ""});
+        const start = new PassiveAction({id: "start", title: "foo"});
+        const end = new PassiveAction({id: "end", title: "bar"});
 
         start.addDirectEdge(end);
         end.addDirectEdge(start);
@@ -29,24 +25,33 @@ describe("Procedure", () => {
         expect(() => {
             new Procedure({
                 name: "myTestProcedure",
-                description: "",
-                authors: ["Pierre"],
-                creationTimestamp: Date.now(),
                 start: start,
                 ends: [end]
             });
-        }).toThrow();
+        }).toThrow("This graph is cyclic");
+    });
+
+    test("it doesn't allow multiple Id", async () => {
+        const start = new PassiveAction({id: "foo", title: "foo"});
+        const end = new PassiveAction({id: "foo", title: "foo"});
+
+        start.addDirectEdge(end);
+
+        expect(() => {
+            new Procedure({
+                name: "myTestProcedure",
+                start: start,
+                ends: [end]
+            });
+        }).toThrow("appear in multiple nodes");
     });
 
     test("it run trivial procedure", async () => {
-        const start = new PassiveAction({id: "start", title: "foo", includeInExport: true, description: ""});
-        const end = new PassiveAction({id: "end", title: "bar", includeInExport: true, description: ""});
+        const start = new PassiveAction({id: "start", title: "foo"});
+        const end = new PassiveAction({id: "end", title: "bar"});
         start.addDirectEdge(end);
         const procedure = new Procedure({
             name: "myTestProcedure",
-            description: "",
-            authors: ["Pierre"],
-            creationTimestamp: Date.now(),
             start: start,
             ends: [end]
         });

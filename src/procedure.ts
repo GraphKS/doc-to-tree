@@ -47,6 +47,11 @@ export class Procedure {
             // Add self and children into graph
             if (!graph.hasNode(node.id)) {
                 graph.setNode(node.id, node);
+            } else {
+                if (node != graph.node(node.id)) {
+                    // Two node has the same Id
+                    throw new Error(`Graph Error. id ${node.id} appear in multiple nodes.`);
+                }
             }
             childrens.forEach(c => {
                     if (!graph.hasNode(c.id)) {
@@ -68,9 +73,11 @@ export class Procedure {
     }
 
     protected checkGraph() {
+        // Check if graph has cycle
         if (!alg.isAcyclic(this.graph)) {
             throw new Error("Graph Error. This graph is cyclic");
         }
+        // check that every end is reachable
         this.ends.forEach(e => {
             if (!this.graph.hasNode(e.id)) {
                 throw new Error(`Graph Error. This graph doesn't end with ${e.id}`);
