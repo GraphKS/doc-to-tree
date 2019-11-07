@@ -2,10 +2,11 @@ import * as Handlebars from "handlebars";
 import {Exporter} from "../Exporter";
 import {readFileSync} from "fs";
 import {join} from "path";
+import dedent = require("dedent");
 
 const templateDefinition = readFileSync(join(__dirname, "template.handlebars")).toString();
 
-const template = Handlebars.compile(templateDefinition);
+const template = Handlebars.compile(templateDefinition, {preventIndent: true});
 
 export const MARKDOWN_EXPORT_TYPE = "Markdown";
 
@@ -31,10 +32,11 @@ export class MarkdowExporter extends Exporter {
                         content: block.block.content,
                         language: block.block.language
                     };
-                    else if (block instanceof MarkdownLink) return {
-                        isLink: true,
+                    else if (block instanceof MarkdownNextStep) return {
+                        isNextStep: true,
                         target: block.block.target,
-                        label: block.block.label
+                        label: block.block.label,
+                        comment: block.block.comment
                     };
                     else return null;
                 });
@@ -43,11 +45,11 @@ export class MarkdowExporter extends Exporter {
                 };
             }).filter(action => action !== null)
         };
-        return template(data);
+        return dedent(template(data));
     }
 }
 
-export type MarkdownBlockType = MarkdownTitle | MarkdownParagraph | MarkdownCode | MarkdownLink
+export type MarkdownBlockType = MarkdownTitle | MarkdownParagraph | MarkdownCode | MarkdownNextStep
 
 export class MarkdownTitle {
     constructor(public block: { title: string }) {
@@ -64,7 +66,7 @@ export class MarkdownCode {
     }
 }
 
-export class MarkdownLink {
-    constructor(public block: { label: string, target: string }) {
+export class MarkdownNextStep {
+    constructor(public block: { label: string, target: string, comment: string }) {
     }
 }

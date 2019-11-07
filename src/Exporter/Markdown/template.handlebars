@@ -2,33 +2,31 @@
 Generated on {{ procedure.creationDate }}
 
 {{#if procedure.authors}}
-    Written by
-    {{#each procedure.authors}}
-        * {{name}}
-    {{/each}}
+Written by
+{{#each procedure.authors}}
+    * {{name}}
+{{/each}}
 {{/if}}
 
-{{ procedure.description}}
+{{procedure.description}}
 
 {{#each actions}}
-    {{#each blocks}}
-        {{#if isTitle}}
-            ## {{content}}
+{{#each blocks}}
+{{#if isTitle}}
+## {{content}}
 
-        {{/if}}
-        {{#if isParagraph}}
-            {{content}}
-
-        {{/if}}
-        {{#if isCode}}
-            ```{{language}}
-            {{content}}
-            ```
-
-        {{/if}}
-        {{#if isLink}}
-            [{{label}}]({{target}})
-        {{/if}}
-    {{/each}}
+{{/if}}
+{{#if isParagraph}}
+{{content}}
+{{/if}}
+{{#if isCode}}
+```{{language}}
+{{content}}
+```
+{{/if}}
+{{#if isNextStep}}
+* [{{label}}]({{target}}){{#if comment}}: {{comment}}{{/if}}
+{{/if}}
+{{/each}}
 
 {{/each}}
