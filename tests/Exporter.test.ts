@@ -1,7 +1,7 @@
 import {PassiveAction} from "../src/Actions/PassiveAction";
 import {Procedure} from "../src/procedure";
-import {MarkdowExporter} from "../src/Exporter/MarkdowExporter";
 import {Edge} from "../src/Edge/Edge";
+import {MarkdowExporter} from "../src/Exporter/Markdown/MarkdowExporter";
 
 function createSimpleProcedure(): Procedure {
     const start = new PassiveAction({
