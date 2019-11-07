@@ -14,8 +14,3 @@ export abstract class Exporter {
 
     public abstract export(): string
 }
-
-export interface ExportBlock {
-    type: string
-    [propName: string]: any;
-}
