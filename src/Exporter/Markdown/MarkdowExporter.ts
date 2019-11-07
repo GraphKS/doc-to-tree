@@ -1,5 +1,5 @@
 import * as Handlebars from "handlebars";
-import {ExportBlock, Exporter} from "../Exporter";
+import {Exporter} from "../Exporter";
 import {readFileSync} from "fs";
 import {join} from "path";
 
@@ -19,18 +19,22 @@ export class MarkdowExporter extends Exporter {
             actions: this.getActionInOrder().map(action => {
                 if (!action.includeInExport) return null;
                 const blocks = action.export().map(block => {
-                    if (isSupporterBlock(block)) {
-                        switch (block.type) {
-                            case "markdown-title":
-                                return {isTitle: true, content: block.content};
-                            case "markdown-paragraph":
-                                return {isParagraph: true, content: block.content};
-                            case "markdown-code":
-                                return {isCode: true, content: block.content, language: block.language};
-                            case "markdown-link":
-                                return {isLink: true, target: block.target, label: block.label};
-                        }
-                    }
+                    if (block instanceof MarkdownTitle) return {isTitle: true, content: block.block.title};
+                    else if (block instanceof MarkdownParagraph) return {
+                        isParagraph: true,
+                        content: block.block.content
+                    };
+                    else if (block instanceof MarkdownCode) return {
+                        isCode: true,
+                        content: block.block.content,
+                        language: block.block.language
+                    };
+                    else if (block instanceof MarkdownLink) return {
+                        isLink: true,
+                        target: block.block.target,
+                        label: block.block.label
+                    };
+                    else return null;
                 });
                 return {
                     blocks: blocks
@@ -41,38 +45,24 @@ export class MarkdowExporter extends Exporter {
     }
 }
 
-export interface MarkdownExportable extends ExportBlock {
-    export(): Array<supportedBlock>
+export type MarkdownBlockType = MarkdownTitle | MarkdownParagraph | MarkdownCode | MarkdownLink
+
+export class MarkdownTitle {
+    constructor(public block: { title: string }) {
+    }
 }
 
-function isSupporterBlock(exportBlock: ExportBlock): exportBlock is supportedBlock {
-    const types = ["markdown-title", "markdown-paragraph", "markdown-code", "markdown-link"];
-    return types.includes(exportBlock.type);
+export class MarkdownParagraph {
+    constructor(public block: { content: string }) {
+    }
 }
 
-
-type supportedBlock = MarkdownTitle | MarkdownParagraph | MarkdownCode | MarkdownLink
-
-// TODO: replace interface with real class
-
-export interface MarkdownTitle {
-    type: "markdown-title";
-    content: string
+export class MarkdownCode {
+    constructor(public block: { content: string, language: string }) {
+    }
 }
 
-export interface MarkdownParagraph {
-    type: "markdown-paragraph"
-    content: string
-}
-
-export interface MarkdownCode {
-    type: "markdown-code"
-    content: string
-    language: string
-}
-
-export interface MarkdownLink {
-    type: "markdown-link"
-    target: string
-    label: string
+export class MarkdownLink {
+    constructor(public block: { label: string, target: string }) {
+    }
 }

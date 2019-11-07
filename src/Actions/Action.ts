@@ -1,5 +1,4 @@
 import {Edge} from "../Edge/Edge";
-import {ExportBlock} from "../Exporter/Exporter";
 
 export interface Context {
     [key: string]: any
@@ -30,7 +29,7 @@ export abstract class Action {
         this.includeInExport = includeInExport;
     }
 
-    public abstract export(): Array<ExportBlock>
+    public abstract export(): Array<any>
 
     get edges(): Array<Edge> {
         return [...this._edges];
