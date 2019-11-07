@@ -7,6 +7,8 @@ const templateDefinition = readFileSync(join(__dirname, "template.handlebars")).
 
 const template = Handlebars.compile(templateDefinition);
 
+export const MARKDOWN_EXPORT_TYPE = "Markdown";
+
 export class MarkdowExporter extends Exporter {
     public export(): string {
         const data = {
@@ -18,7 +20,7 @@ export class MarkdowExporter extends Exporter {
             },
             actions: this.getActionInOrder().map(action => {
                 if (!action.includeInExport) return null;
-                const blocks = action.export().map(block => {
+                const blocks = action.export()[MARKDOWN_EXPORT_TYPE].map(block => {
                     if (block instanceof MarkdownTitle) return {isTitle: true, content: block.block.title};
                     else if (block instanceof MarkdownParagraph) return {
                         isParagraph: true,

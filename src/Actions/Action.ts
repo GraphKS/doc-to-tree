@@ -29,7 +29,7 @@ export abstract class Action {
         this.includeInExport = includeInExport;
     }
 
-    public abstract export(): Array<any>
+    public abstract export(): ActionExport
 
     get edges(): Array<Edge> {
         return [...this._edges];
@@ -41,4 +41,8 @@ export abstract class Action {
         if (this.targets.includes(edge.target)) throw new Error(`Action Error. Node ${this.id} is already connected to ${edge.target.id}`);
         this.targets.push(edge.target);
     }
+}
+
+export interface ActionExport {
+    [type: string]: Array<any>
 }
