@@ -1,5 +1,5 @@
 import * as Handlebars from "handlebars";
-import {Exporter} from "../Exporter";
+import {ExportBlock, Exporter} from "../Exporter";
 import {readFileSync} from "fs";
 import {join} from "path";
 
@@ -7,7 +7,7 @@ const templateDefinition = readFileSync(join(__filename, "template.handlebars"))
 
 const template = Handlebars.compile(templateDefinition);
 
-export class MarkdowExporter extends Exporter<MarkdownExportable> {
+export class MarkdowExporter extends Exporter {
     public export(): string {
         const data = {
             procedure: {
@@ -16,21 +16,21 @@ export class MarkdowExporter extends Exporter<MarkdownExportable> {
                 authors: this.procedure.authors.map(author => ({name: author})),
                 creationDate: new Date(this.procedure.creationTimestamp).toUTCString()
             },
-            actions: this.getActionOrder().map(action => {
+            actions: this.getActionInOrder().map(action => {
                 if (!action.includeInExport) return null;
                 return {
-                    blocks: action.exportToMarkdown().map(block => {
-                        switch (block.type) {
-                            case "title":
-                                return {isTitle: true, content: block.content};
-                            case "paragraph":
-                                return {isParagraph: true, content: block.content};
-                            case "code":
-                                return {isCode: true, content: block.content, language: block.language};
-                            case "link":
-                                return {isLink: true, target: block.target, label: block.label};
-                            default:
-                                throw new Error(`Export Error. Unsuported block type ${block}`);
+                    blocks: action.export().map(block => {
+                        if (isSupporterBlock(block)) {
+                            switch (block.type) {
+                                case "markdown-title":
+                                    return {isTitle: true, content: block.content};
+                                case "markdown-paragraph":
+                                    return {isParagraph: true, content: block.content};
+                                case "markdown-code":
+                                    return {isCode: true, content: block.content, language: block.language};
+                                case "markdown-link":
+                                    return {isLink: true, target: block.target, label: block.label};
+                            }
                         }
                     })
                 };
@@ -40,32 +40,38 @@ export class MarkdowExporter extends Exporter<MarkdownExportable> {
     }
 }
 
-export interface MarkdownExportable {
-    includeInExport: boolean
-
-    exportToMarkdown(): Array<supportedBlock>
+export interface MarkdownExportable extends ExportBlock {
+    export(): Array<supportedBlock>
 }
+
+function isSupporterBlock(exportBlock: ExportBlock): exportBlock is supportedBlock {
+    const types = ["markdown-title", "markdown-paragraph", "markdown-code", "markdown-link"];
+    return types.includes(exportBlock.type);
+}
+
 
 type supportedBlock = MarkdownTitle | MarkdownParagraph | MarkdownCode | MarkdownLink
 
+// TODO: replace interface with real class
+
 export interface MarkdownTitle {
-    type: "title";
+    type: "markdown-title";
     content: string
 }
 
 export interface MarkdownParagraph {
-    type: "paragraph"
+    type: "markdown-paragraph"
     content: string
 }
 
 export interface MarkdownCode {
-    type: "code"
+    type: "markdown-code"
     content: string
     language: string
 }
 
 export interface MarkdownLink {
-    type: "link"
+    type: "markdown-link"
     target: string
     label: string
 }

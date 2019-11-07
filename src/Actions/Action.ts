@@ -1,4 +1,5 @@
 import {Edge} from "../Edge/Edge";
+import {ExportBlock} from "../Exporter/Exporter";
 
 export interface Context {
     [key: string]: any
@@ -29,11 +30,14 @@ export abstract class Action {
         this.includeInExport = includeInExport;
     }
 
+    public abstract export(): Array<ExportBlock>
+
     get edges(): Array<Edge> {
         return [...this._edges];
     }
 
-    public addEdge(edge: Edge) {
+    public addEdge(target: Action, comment: string = "") {
+        let edge = new Edge(target, comment);
         this._edges.push(edge);
         if (this.targets.includes(edge.target)) throw new Error(`Action Error. Node ${this.id} is already connected to ${edge.target.id}`);
         this.targets.push(edge.target);

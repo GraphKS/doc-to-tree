@@ -1,4 +1,4 @@
-import {Action, Context} from "./Actions/Action";
+import {Action} from "./Actions/Action";
 import {alg, Graph} from "graphlib";
 
 interface ProcedureOptions {
