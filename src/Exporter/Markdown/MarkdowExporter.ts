@@ -3,7 +3,7 @@ import {ExportBlock, Exporter} from "../Exporter";
 import {readFileSync} from "fs";
 import {join} from "path";
 
-const templateDefinition = readFileSync(join(__filename, "template.handlebars"));
+const templateDefinition = readFileSync(join(__dirname, "template.handlebars")).toString();
 
 const template = Handlebars.compile(templateDefinition);
 
@@ -18,21 +18,22 @@ export class MarkdowExporter extends Exporter {
             },
             actions: this.getActionInOrder().map(action => {
                 if (!action.includeInExport) return null;
-                return {
-                    blocks: action.export().map(block => {
-                        if (isSupporterBlock(block)) {
-                            switch (block.type) {
-                                case "markdown-title":
-                                    return {isTitle: true, content: block.content};
-                                case "markdown-paragraph":
-                                    return {isParagraph: true, content: block.content};
-                                case "markdown-code":
-                                    return {isCode: true, content: block.content, language: block.language};
-                                case "markdown-link":
-                                    return {isLink: true, target: block.target, label: block.label};
-                            }
+                const blocks = action.export().map(block => {
+                    if (isSupporterBlock(block)) {
+                        switch (block.type) {
+                            case "markdown-title":
+                                return {isTitle: true, content: block.content};
+                            case "markdown-paragraph":
+                                return {isParagraph: true, content: block.content};
+                            case "markdown-code":
+                                return {isCode: true, content: block.content, language: block.language};
+                            case "markdown-link":
+                                return {isLink: true, target: block.target, label: block.label};
                         }
-                    })
+                    }
+                });
+                return {
+                    blocks: blocks
                 };
             }).filter(action => action !== null)
         };
