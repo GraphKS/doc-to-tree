@@ -12,7 +12,7 @@ export interface ActionOptions {
     title?: string
 }
 
-export abstract class Action {
+export class Action {
     public readonly id: string;
     public readonly description: string;
     public readonly note?: string;
@@ -27,7 +27,14 @@ export abstract class Action {
         this.title = title;
     }
 
-    public abstract export(): ActionExport
+    public export(): ActionExport {
+        return {
+            title: this.title,
+            description: this.description,
+            note: this.note,
+            edges: this.edges.map(edge => ({target: edge.target.title, note: edge.comment}))
+        };
+    }
 
     get edges(): Array<Edge> {
         return [...this._edges];

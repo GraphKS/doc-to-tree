@@ -1,10 +1,10 @@
 import {Procedure} from "../src/procedure";
-import {PassiveAction} from "../src/Actions/PassiveAction";
+import {Action} from "../src/Actions/Action";
 
 describe("Procedure", () => {
     test("it allow trivial procedure", async () => {
-        const start = new PassiveAction({id: "start", title: "foo"});
-        const end = new PassiveAction({id: "end", title: "bar"});
+        const start = new Action({id: "start", title: "foo"});
+        const end = new Action({id: "end", title: "bar"});
         start.addEdge(end);
         const procedure = new Procedure({
             name: "myTestProcedure",
@@ -16,8 +16,8 @@ describe("Procedure", () => {
     });
 
     test("it doesn't allow cyclic", async () => {
-        const start = new PassiveAction({id: "start", title: "foo"});
-        const end = new PassiveAction({id: "end", title: "bar"});
+        const start = new Action({id: "start", title: "foo"});
+        const end = new Action({id: "end", title: "bar"});
 
         start.addEdge(end);
         end.addEdge(start);
@@ -32,8 +32,8 @@ describe("Procedure", () => {
     });
 
     test("it doesn't allow multiple Id", async () => {
-        const start = new PassiveAction({id: "foo", title: "foo"});
-        const end = new PassiveAction({id: "foo", title: "foo"});
+        const start = new Action({id: "foo", title: "foo"});
+        const end = new Action({id: "foo", title: "foo"});
 
         start.addEdge(end);
 

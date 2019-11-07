@@ -1,19 +1,19 @@
-import {PassiveAction} from "../src/Actions/PassiveAction";
 import {Procedure} from "../src/procedure";
 import {MarkdowExporter} from "../src/Exporter/Markdown/MarkdowExporter";
+import {Action} from "../src/Actions/Action";
 
 function createSimpleProcedure(): Procedure {
-    const start = new PassiveAction({
+    const start = new Action({
         id: "start",
         title: "foo",
         description: "Do nothing to start"
     });
-    const mid = new PassiveAction({
+    const mid = new Action({
         id: "mid",
         title: "mid",
         description: "Do nothing to mid"
     });
-    const end = new PassiveAction({
+    const end = new Action({
         id: "end",
         title: "bar",
         description: "Do nothing to end"
