@@ -1,4 +1,4 @@
-import {Action, Context} from "./Actions/Action";
+import {Action} from "./Actions/Action";
 import {alg, Graph} from "graphlib";
 
 interface ProcedureOptions {
@@ -83,9 +83,5 @@ export class Procedure {
                 throw new Error(`Graph Error. This graph doesn't end with ${e.id}`);
             }
         });
-    }
-
-    public async execute(): Promise<Context> {
-        return await this.start.next({});
     }
 }

@@ -1,4 +1,5 @@
-import {DirectEdge, Edge} from "../Edge/Edge";
+import {Edge} from "../Edge/Edge";
+import {ExportBlock} from "../Exporter/Exporter";
 
 export interface Context {
     [key: string]: any
@@ -29,38 +30,16 @@ export abstract class Action {
         this.includeInExport = includeInExport;
     }
 
+    public abstract export(): Array<ExportBlock>
+
     get edges(): Array<Edge> {
         return [...this._edges];
     }
 
-    public addEdge(edge: Edge) {
+    public addEdge(target: Action, comment: string = "") {
+        let edge = new Edge(target, comment);
         this._edges.push(edge);
         if (this.targets.includes(edge.target)) throw new Error(`Action Error. Node ${this.id} is already connected to ${edge.target.id}`);
         this.targets.push(edge.target);
-    }
-
-    public addDirectEdge(target: Action) {
-        this.addEdge(new DirectEdge(target));
-    }
-
-    protected abstract async execute(ctx: Context): Promise<any>
-
-    public async next(ctx: Context): Promise<Context> {
-        if (ctx.hasOwnProperty(this.id)) {
-            throw new Error(`ContextError. ${this.id} is already in context.`);
-        }
-        ctx[this.id] = await this.execute(ctx);
-        if (!this._edges) {
-            // End of the graph
-            return ctx;
-        } else {
-            // continue to execute the graph
-            for (const edge of this._edges) {
-                if (edge.test(ctx)) {
-                    await edge.target.next(ctx);
-                }
-            }
-            return ctx;
-        }
     }
 }

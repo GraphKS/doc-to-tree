@@ -5,7 +5,7 @@ describe("Procedure", () => {
     test("it allow trivial procedure", async () => {
         const start = new PassiveAction({id: "start", title: "foo"});
         const end = new PassiveAction({id: "end", title: "bar"});
-        start.addDirectEdge(end);
+        start.addEdge(end);
         const procedure = new Procedure({
             name: "myTestProcedure",
             start: start,
@@ -19,8 +19,8 @@ describe("Procedure", () => {
         const start = new PassiveAction({id: "start", title: "foo"});
         const end = new PassiveAction({id: "end", title: "bar"});
 
-        start.addDirectEdge(end);
-        end.addDirectEdge(start);
+        start.addEdge(end);
+        end.addEdge(start);
 
         expect(() => {
             new Procedure({
@@ -35,7 +35,7 @@ describe("Procedure", () => {
         const start = new PassiveAction({id: "foo", title: "foo"});
         const end = new PassiveAction({id: "foo", title: "foo"});
 
-        start.addDirectEdge(end);
+        start.addEdge(end);
 
         expect(() => {
             new Procedure({
@@ -44,19 +44,5 @@ describe("Procedure", () => {
                 ends: [end]
             });
         }).toThrow("appear in multiple nodes");
-    });
-
-    test("it run trivial procedure", async () => {
-        const start = new PassiveAction({id: "start", title: "foo"});
-        const end = new PassiveAction({id: "end", title: "bar"});
-        start.addDirectEdge(end);
-        const procedure = new Procedure({
-            name: "myTestProcedure",
-            start: start,
-            ends: [end]
-        });
-        let ctx = await procedure.execute();
-        expect(ctx).toHaveProperty("start");
-        expect(ctx).toHaveProperty("end");
     });
 });
