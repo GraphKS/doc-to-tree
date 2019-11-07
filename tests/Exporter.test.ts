@@ -6,20 +6,17 @@ function createSimpleProcedure(): Procedure {
     const start = new PassiveAction({
         id: "start",
         title: "foo",
-        description: "Do nothing to start",
-        includeInExport: true
+        description: "Do nothing to start"
     });
     const mid = new PassiveAction({
         id: "mid",
         title: "mid",
-        description: "Do nothing to mid",
-        includeInExport: true
+        description: "Do nothing to mid"
     });
     const end = new PassiveAction({
         id: "end",
         title: "bar",
-        description: "Do nothing to end",
-        includeInExport: true
+        description: "Do nothing to end"
     });
     start.addEdge(mid);
     mid.addEdge(end, "You should end.");

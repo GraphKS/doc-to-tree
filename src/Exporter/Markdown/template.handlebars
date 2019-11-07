@@ -11,22 +11,20 @@ Written by
 {{procedure.description}}
 
 {{#each actions}}
-{{#each blocks}}
-{{#if isTitle}}
-## {{content}}
+## {{title}}
 
-{{/if}}
-{{#if isParagraph}}
-{{content}}
-{{/if}}
-{{#if isCode}}
-```{{language}}
-{{content}}
+{{description}}
+{{note}}
+{{#if snippet}}
+```{{snippet.language}}
+{{snippet.content}}
 ```
 {{/if}}
-{{#if isNextStep}}
-* [{{label}}]({{target}}){{#if comment}}: {{comment}}{{/if}}
-{{/if}}
+{{#if edges}}
+Next steps:
+{{#each edges}}
+* [{{target}}](#{{target}}){{#if note}}: {{note}}{{/if}}
 {{/each}}
+{{/if}}
 
 {{/each}}

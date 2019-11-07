@@ -19,31 +19,7 @@ export class MarkdowExporter extends Exporter {
                 authors: this.procedure.authors.map(author => ({name: author})),
                 creationDate: new Date(this.procedure.creationTimestamp).toUTCString()
             },
-            actions: this.getActionInOrder().map(action => {
-                if (!action.includeInExport) return null;
-                const blocks = action.export()[MARKDOWN_EXPORT_TYPE].map(block => {
-                    if (block instanceof MarkdownTitle) return {isTitle: true, content: block.block.title};
-                    else if (block instanceof MarkdownParagraph) return {
-                        isParagraph: true,
-                        content: block.block.content
-                    };
-                    else if (block instanceof MarkdownCode) return {
-                        isCode: true,
-                        content: block.block.content,
-                        language: block.block.language
-                    };
-                    else if (block instanceof MarkdownNextStep) return {
-                        isNextStep: true,
-                        target: block.block.target,
-                        label: block.block.label,
-                        comment: block.block.comment
-                    };
-                    else return null;
-                });
-                return {
-                    blocks: blocks
-                };
-            }).filter(action => action !== null)
+            actions: this.getActionInOrder().map(action => action.export())
         };
         return dedent(template(data));
     }

@@ -1,4 +1,5 @@
 import {Edge} from "../Edge/Edge";
+import {ActionExport} from "../Exporter/Exporter";
 
 export interface Context {
     [key: string]: any
@@ -7,26 +8,23 @@ export interface Context {
 export interface ActionOptions {
     id: string
     description?: string
-    comments?: string
+    note?: string
     title?: string
-    includeInExport?: boolean
 }
 
 export abstract class Action {
     public readonly id: string;
     public readonly description: string;
-    public readonly comments: string;
+    public readonly note?: string;
     public readonly title: string;
     private _edges: Array<Edge> = [];
     private targets: Array<Action> = [];
-    public readonly includeInExport: boolean;
 
-    constructor({id, description = "", title = id, comments = "", includeInExport = true}: ActionOptions) {
+    constructor({id, description = "", title = id, note}: ActionOptions) {
         this.id = id;
         this.description = description;
-        this.comments = comments;
+        this.note = note;
         this.title = title;
-        this.includeInExport = includeInExport;
     }
 
     public abstract export(): ActionExport
@@ -41,8 +39,4 @@ export abstract class Action {
         if (this.targets.includes(edge.target)) throw new Error(`Action Error. Node ${this.id} is already connected to ${edge.target.id}`);
         this.targets.push(edge.target);
     }
-}
-
-export interface ActionExport {
-    [type: string]: Array<any>
 }

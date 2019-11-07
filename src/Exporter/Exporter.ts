@@ -14,3 +14,14 @@ export abstract class Exporter {
 
     public abstract export(): string
 }
+
+export interface ActionExport {
+    title: string
+    description: string
+    note?: string
+    edges: Array<{ target: string, note?: string }>
+    snippet?: {
+        content: string
+        language: string
+    }
+}
