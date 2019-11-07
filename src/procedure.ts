@@ -84,8 +84,4 @@ export class Procedure {
             }
         });
     }
-
-    public async execute(): Promise<Context> {
-        return await this.start.next({});
-    }
 }
