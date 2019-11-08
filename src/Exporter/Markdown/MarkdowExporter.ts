@@ -19,7 +19,7 @@ export class MarkdowExporter extends Exporter {
                 authors: this.procedure.authors.map(author => ({name: author})),
                 creationDate: new Date(this.procedure.creationTimestamp).toUTCString()
             },
-            actions: this.getActionInOrder().map(action => action.export())
+            actions: this.procedure.preOrder().map(step => step.export())
         };
         return dedent(template(data));
     }

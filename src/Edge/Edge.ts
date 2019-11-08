@@ -1,6 +1,6 @@
-import {Action} from "../Actions/Action";
+import {Step} from "../Actions/Step";
 
 export class Edge {
-    constructor(public target: Action, public comment: string = "") {
+    constructor(public target: Step, public comment: string = "") {
     }
 }

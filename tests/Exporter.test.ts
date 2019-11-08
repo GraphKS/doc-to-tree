@@ -1,40 +1,36 @@
 import {Procedure} from "../src/procedure";
 import {MarkdowExporter} from "../src/Exporter/Markdown/MarkdowExporter";
-import {Action} from "../src/Actions/Action";
+import {Step} from "../src/Actions/Step";
 
 function createSimpleProcedure(): Procedure {
-    const start = new Action({
-        id: "start",
+    const start = new Step({
         title: "foo",
         description: "Do nothing to start"
     });
-    const mid = new Action({
-        id: "mid",
+    const mid = new Step({
         title: "mid",
         description: "Do nothing to mid"
     });
-    const end = new Action({
-        id: "end",
+    const end = new Step({
         title: "bar",
         description: "Do nothing to end"
     });
-    start.addEdge(mid);
-    mid.addEdge(end, "You should end.");
-    return new Procedure({
+
+    const procedure = new Procedure({
         name: "myProcedure",
         description: "simple test",
-        start: start,
-        ends: [end],
         authors: ["Logtopus"]
     });
+    procedure.addStep(start, mid, end);
+    return procedure;
 }
 
 describe("MarkdownExporter", () => {
     test("it give correct order", () => {
         const procedure = createSimpleProcedure();
         const exporter = new MarkdowExporter(procedure);
-        const actions = exporter["getActionInOrder"]();  // This is a private method
-        expect(actions).toStrictEqual([procedure.start, procedure.start.edges[0].target, procedure.ends[0]]);
+        const actions = procedure.preOrder();  // This is a private method
+        expect(actions).toStrictEqual([procedure.steps[0], procedure.steps[1], procedure.steps[2]]);
     });
     test("it generate markdown", () => {
         const procedure = createSimpleProcedure();

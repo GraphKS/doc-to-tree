@@ -20,10 +20,10 @@ Written by
 {{snippet.content}}
 ```
 {{/if}}
-{{#if edges}}
+{{#if nextSteps}}
 Next steps:
-{{#each edges}}
-* [{{target}}](#{{target}}){{#if note}}: {{note}}{{/if}}
+{{#each nextSteps}}
+* [{{title}}](#{{title}}){{#if note}}: {{note}}{{/if}}
 {{/each}}
 {{/if}}
 
