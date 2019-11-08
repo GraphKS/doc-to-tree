@@ -13,7 +13,8 @@ function createSimpleProcedure(): Procedure {
     });
     const end = new Step({
         title: "bar",
-        description: "Do nothing to end"
+        description: "Do nothing to end",
+        note: "You should end"
     });
 
     const procedure = new Procedure({
@@ -42,7 +43,7 @@ describe("MarkdownExporter", () => {
         expect(documentation).toMatch("simple test");
         expect(documentation).toMatch("## foo");
         expect(documentation).toMatch("## mid");
-        expect(documentation).toMatch("You should end.");
+        expect(documentation).toMatch("You should end");
         expect(documentation).toMatch("## bar");
         console.log(documentation);
     });
