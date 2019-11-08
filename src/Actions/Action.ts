@@ -1,5 +1,5 @@
 import {Edge} from "../Edge/Edge";
-import {ActionExport} from "../Exporter/Exporter";
+import {ActionExport} from "../Exporter/ActionExport";
 
 export interface Context {
     [key: string]: any
@@ -29,10 +29,16 @@ export class Action {
 
     public export(): ActionExport {
         return {
+            id: this.id,
+            type: Action.name,
             title: this.title,
             description: this.description,
             note: this.note,
-            edges: this.edges.map(edge => ({target: edge.target.title, note: edge.comment}))
+            edges: this.edges.map(edge => ({
+                targetId: edge.target.id,
+                targetTitle: edge.target.title,
+                note: edge.comment
+            }))
         };
     }
 
