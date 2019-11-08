@@ -1,4 +1,4 @@
-export interface ActionExport {
+export interface StepExport {
     type: string
     title: string
     description: string

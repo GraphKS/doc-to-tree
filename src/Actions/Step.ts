@@ -1,8 +1,4 @@
-import {ActionExport} from "../Exporter/ActionExport";
-
-export interface Context {
-    [key: string]: any
-}
+import {StepExport} from "../Exporter/StepExport";
 
 export interface ActionOptions {
     description?: string
@@ -25,7 +21,7 @@ export class Step {
         this.parent = parent;
     }
 
-    public export(): ActionExport {
+    public export(): StepExport {
         return {
             type: Step.name,
             title: this.title,
