@@ -1,19 +1,19 @@
 export class Tree {
-    public childrens: Array<this> = [];
-    public parent?: this;
+    public childrens: Array<Tree> = [];
+    public parent?: Tree;
 
     public isRoot(): boolean {
-        return parent == undefined;
+        return this.parent == undefined;
     }
 
-    public addChildren(...targets: this[]) {
+    public addChildren(...targets: Tree[]) {
         targets.forEach(target => {
             target.parent = this;
             this.childrens.push(target);
         });
     }
 
-    public getNextSibling(): this | null {
+    public getNextSibling(): Tree | null {
         if (this.parent == undefined) return null;
         else {
             const index = this.parent.childrens.indexOf(this);
@@ -26,14 +26,14 @@ export class Tree {
         }
     }
 
-    public preOrder(): Array<this> {
+    public preOrder(): Array<Tree> {
         return [
             this,
             ...this.childrens.flatMap(child => child.preOrder())
         ];
     }
 
-    public postOrder(): Array<this> {
+    public postOrder(): Array<Tree> {
         return [
             ...this.childrens.flatMap(child => child.preOrder()),
             this

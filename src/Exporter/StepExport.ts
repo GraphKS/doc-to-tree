@@ -1,5 +1,4 @@
 export interface StepExport {
-    type: string
     title: string
     description: string
     note?: string

@@ -18,7 +18,7 @@ function createSimpleProcedure(): Procedure {
     });
 
     const procedure = new Procedure({
-        name: "myProcedure",
+        title: "myProcedure",
         description: "simple test",
         authors: ["Logtopus"]
     });
@@ -31,7 +31,7 @@ describe("MarkdownExporter", () => {
         const procedure = createSimpleProcedure();
         const exporter = new MarkdowExporter(procedure);
         const actions = procedure.preOrder();  // This is a private method
-        expect(actions).toStrictEqual([procedure.childrens[0], procedure.childrens[1], procedure.childrens[2]]);
+        expect(actions).toStrictEqual([procedure, ...procedure.childrens]);
     });
     test("it generate markdown", () => {
         const procedure = createSimpleProcedure();

@@ -21,14 +21,14 @@ export class Step extends Tree {
 
     public export(): StepExport {
         return {
-            type: Step.name,
             title: this.title,
             description: this.description,
             note: this.note,
-            nextSteps: this.childrens.map(child => ({
-                title: child.title,
-                note: child.note
-            }))
+            nextSteps: this.childrens.filter(child => child instanceof Step)
+                .map(child => ({
+                    title: (child as Step).title,
+                    note: (child as Step).note
+                }))
         };
     }
 }
