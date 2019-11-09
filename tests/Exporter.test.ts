@@ -1,7 +1,8 @@
 import {Procedure} from "../src/procedure";
 import {MarkdowExporter} from "../src/Exporter/Markdown/MarkdowExporter";
-import {Step} from "../src/Step";
 import {DotExporter} from "../src/Exporter/Dot/DotExporter";
+import {LoremStep} from "../src/Steps/LoremStep";
+import {Step} from "../src/Step";
 
 function createSimpleProcedure(): Procedure {
     const start = new Step({
@@ -32,25 +33,25 @@ function createNestedProcedure() {
     const installation = new Procedure({title: "Install NodeJS"});
 
     const mac = new Procedure({title: "Mac"});
-    mac.addChildren(new Step({title: "install brew"}), new Step({title: "brew install"}));
+    mac.addChildren(new LoremStep({title: "install brew"}), new LoremStep({title: "brew install"}));
     const windows = new Procedure({title: "Windows"});
-    windows.addChildren(new Step({title: "Download .exe"}), new Step({title: "install from .exe"}));
+    windows.addChildren(new LoremStep({title: "Download .exe"}), new LoremStep({title: "install from .exe"}));
     const linux = new Procedure({title: "Linux"});
-    linux.addChildren(new Step({title: "apt-get install"}));
+    linux.addChildren(new LoremStep({title: "apt-get install"}));
 
     installation.addChildren(mac, windows, linux);
 
-    const dev = new Step({title: "dev your app"});
+    const dev = new LoremStep({title: "dev your app"});
 
     const deploy = new Procedure({title: "Deployment"});
     const clever = new Procedure({title: "Clever Cloud"});
-    clever.addChildren(new Procedure({title: "Install clever cli"}), new Step({title: "Clever Cloud cli login"}), new Step({title: "Clever deploy"}));
+    clever.addChildren(new Procedure({title: "Install clever cli"}), new LoremStep({title: "Clever Cloud cli login"}), new LoremStep({title: "Clever deploy"}));
 
     const aws = new Procedure({title: "AWS"});
-    aws.addChildren(new Procedure({title: "Install AWS cli"}), new Step({title: "AWS cli login"}), new Step({title: "AWS deploy"}));
+    aws.addChildren(new Procedure({title: "Install AWS cli"}), new LoremStep({title: "AWS cli login"}), new LoremStep({title: "AWS deploy"}));
 
     const azure = new Procedure({title: "Azure"});
-    azure.addChildren(new Procedure({title: "Install Azure cli"}), new Step({title: "Azure cli login"}), new Step({title: "Azure deploy"}));
+    azure.addChildren(new Procedure({title: "Install Azure cli"}), new LoremStep({title: "Azure cli login"}), new LoremStep({title: "Azure deploy"}));
 
     deploy.addChildren(clever, aws, azure);
 

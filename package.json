@@ -29,6 +29,7 @@
     "@types/graphlib": "^2.1.5",
     "dedent": "^0.7.0",
     "graphlib": "^2.1.7",
-    "handlebars": "^4.5.1"
+    "handlebars": "^4.5.1",
+    "lorem-ipsum": "^2.0.3"
   }
 }
