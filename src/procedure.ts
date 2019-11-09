@@ -1,4 +1,4 @@
-import {Step, StepExport, StepOption} from "./Step";
+import {isStepExport, Step, StepExport, StepOption} from "./Step";
 
 interface ProcedureOptions extends StepOption {
     authors?: Array<string>,
@@ -29,4 +29,10 @@ export interface ProcedureExport extends StepExport {
     authors: Array<string>
     creationTimestamp: number
     creationUtcString: string
+}
+
+function isProcedureExport(object: any): object is ProcedureExport {
+    if (isStepExport(object)) {
+        return ("authors" in object && "creationTimestamp" in object && "creationUtcString" in object);
+    } else return false;
 }

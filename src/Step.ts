@@ -40,3 +40,7 @@ export interface StepExport {
     depth: number
     nextSteps: Array<{ title: string, note?: string }>
 }
+
+export function isStepExport(object: any): object is StepExport {
+    return ("title" in object && "description" in object && "depth" in object && "nextSteps" in object);
+}
