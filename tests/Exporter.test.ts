@@ -1,6 +1,6 @@
 import {Procedure} from "../src/procedure";
 import {MarkdowExporter} from "../src/Exporter/Markdown/MarkdowExporter";
-import {Step} from "../src/Actions/Step";
+import {Step} from "../src/Step";
 
 function createSimpleProcedure(): Procedure {
     const start = new Step({
@@ -18,11 +18,42 @@ function createSimpleProcedure(): Procedure {
     });
 
     const procedure = new Procedure({
-        name: "myProcedure",
+        title: "myProcedure",
         description: "simple test",
         authors: ["Logtopus"]
     });
-    procedure.addStep(start, mid, end);
+    procedure.addChildren(start, mid, end);
+    return procedure;
+}
+
+function createNestedProcedure() {
+    const procedure = new Procedure({title: "Create a nodeJS App"});
+    const installation = new Procedure({title: "Install NodeJS"});
+
+    const mac = new Procedure({title: "Mac"});
+    mac.addChildren(new Step({title: "install brew"}), new Step({title: "brew install"}));
+    const windows = new Procedure({title: "Windows"});
+    windows.addChildren(new Step({title: "Download .exe"}), new Step({title: "install from .exe"}));
+    const linux = new Procedure({title: "Linux"});
+    linux.addChildren(new Step({title: "apt-get install"}));
+
+    installation.addChildren(mac, windows, linux);
+
+    const dev = new Step({title: "dev your app"});
+
+    const deploy = new Procedure({title: "Deployment"});
+    const clever = new Procedure({title: "Clever Cloud"});
+    clever.addChildren(new Procedure({title: "Install clever cli"}), new Step({title: "login"}), new Step({title: "deploy"}));
+
+    const aws = new Procedure({title: "AWS"});
+    aws.addChildren(new Procedure({title: "Install AWS cli"}), new Step({title: "login"}), new Step({title: "deploy"}));
+
+    const azure = new Procedure({title: "Azure"});
+    azure.addChildren(new Procedure({title: "Install Azure cli"}), new Step({title: "login"}), new Step({title: "deploy"}));
+
+    deploy.addChildren(clever, aws, azure);
+
+    procedure.addChildren(installation, dev, deploy);
     return procedure;
 }
 
@@ -31,7 +62,7 @@ describe("MarkdownExporter", () => {
         const procedure = createSimpleProcedure();
         const exporter = new MarkdowExporter(procedure);
         const actions = procedure.preOrder();  // This is a private method
-        expect(actions).toStrictEqual([procedure.steps[0], procedure.steps[1], procedure.steps[2]]);
+        expect(actions).toStrictEqual([procedure, ...procedure.childrens]);
     });
     test("it generate markdown", () => {
         const procedure = createSimpleProcedure();
@@ -45,6 +76,23 @@ describe("MarkdownExporter", () => {
         expect(documentation).toMatch("## mid");
         expect(documentation).toMatch("You should end");
         expect(documentation).toMatch("## bar");
+        console.log(documentation);
+    });
+    test("it generate markdown for nested structure", () => {
+        const procedure = createNestedProcedure();
+
+        const exporter = new MarkdowExporter(procedure);
+        const documentation = exporter.export();
+
+        expect(documentation).toMatch("* [Install NodeJS](#Install NodeJS)");
+        expect(documentation).toMatch("* [dev your app](#dev your app)");
+        expect(documentation).toMatch("* [Deployment](#Deployment)");
+        expect(documentation).toMatch("* [Mac](#Mac)");
+        expect(documentation).toMatch("* [Windows](#Windows)");
+        expect(documentation).toMatch("* [Linux](#Linux)");
+        expect(documentation).toMatch("* [Clever Cloud](#Clever Cloud)");
+        expect(documentation).toMatch("## Install clever cli");
+
         console.log(documentation);
     });
 });

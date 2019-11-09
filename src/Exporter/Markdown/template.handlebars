@@ -1,24 +1,35 @@
-# {{ procedure.name }}
-Generated on {{ procedure.creationDate }}
+{{#each steps}}
+{{#if isRootProcedure}}
+# {{ title }}
+Generated on {{ creationDate }}
 
-{{#if procedure.authors}}
+{{#if authors}}
 Written by
-{{#each procedure.authors}}
+{{#each authors}}
     * {{name}}
 {{/each}}
 {{/if}}
 
-{{procedure.description}}
-
-{{#each actions}}
+{{description}}
+{{#if nextSteps}}
+Next steps:
+{{#each nextSteps}}
+    * [{{title}}](#{{title}}){{#if note}}: {{note}}{{/if}}
+{{/each}}
+{{/if}}
+{{/if}}
+{{#unless isRootProcedure}}
 ## {{title}}
 
+{{#if description}}
 {{description}}
-{{note}}
+
+{{/if}}
 {{#if snippet}}
 ```{{snippet.language}}
 {{snippet.content}}
 ```
+
 {{/if}}
 {{#if nextSteps}}
 Next steps:
@@ -26,5 +37,6 @@ Next steps:
 * [{{title}}](#{{title}}){{#if note}}: {{note}}{{/if}}
 {{/each}}
 {{/if}}
+{{/unless}}
 
 {{/each}}
