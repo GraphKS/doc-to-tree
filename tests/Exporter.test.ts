@@ -1,6 +1,7 @@
 import {Procedure} from "../src/procedure";
 import {MarkdowExporter} from "../src/Exporter/Markdown/MarkdowExporter";
 import {Step} from "../src/Step";
+import {DotExporter} from "../src/Exporter/Dot/DotExporter";
 
 function createSimpleProcedure(): Procedure {
     const start = new Step({
@@ -43,13 +44,13 @@ function createNestedProcedure() {
 
     const deploy = new Procedure({title: "Deployment"});
     const clever = new Procedure({title: "Clever Cloud"});
-    clever.addChildren(new Procedure({title: "Install clever cli"}), new Step({title: "login"}), new Step({title: "deploy"}));
+    clever.addChildren(new Procedure({title: "Install clever cli"}), new Step({title: "Clever Cloud cli login"}), new Step({title: "Clever deploy"}));
 
     const aws = new Procedure({title: "AWS"});
-    aws.addChildren(new Procedure({title: "Install AWS cli"}), new Step({title: "login"}), new Step({title: "deploy"}));
+    aws.addChildren(new Procedure({title: "Install AWS cli"}), new Step({title: "AWS cli login"}), new Step({title: "AWS deploy"}));
 
     const azure = new Procedure({title: "Azure"});
-    azure.addChildren(new Procedure({title: "Install Azure cli"}), new Step({title: "login"}), new Step({title: "deploy"}));
+    azure.addChildren(new Procedure({title: "Install Azure cli"}), new Step({title: "Azure cli login"}), new Step({title: "Azure deploy"}));
 
     deploy.addChildren(clever, aws, azure);
 
@@ -91,6 +92,30 @@ describe("MarkdownExporter", () => {
         expect(documentation).toMatch("* [Linux](#linux)");
         expect(documentation).toMatch("* [Clever Cloud](#clever-cloud)");
         expect(documentation).toMatch("## Install clever cli");
+
+        console.log(documentation);
+    });
+});
+
+describe("DotExporter", () => {
+    test("it generate dot", () => {
+        const procedure = createSimpleProcedure();
+        const exporter = new DotExporter(procedure);
+        const documentation = exporter.export();
+        expect(documentation.length).toBeGreaterThan(0);
+        expect(documentation).toMatch("\"myProcedure\"->\"foo\"");
+        expect(documentation).toMatch("\"myProcedure\"->\"mid\"");
+        expect(documentation).toMatch("\"myProcedure\"->\"bar\"");
+        console.log(documentation);
+    });
+    test("it generate dot for nested structure", () => {
+        const procedure = createNestedProcedure();
+
+        const exporter = new DotExporter(procedure);
+        const documentation = exporter.export();
+
+        // expect(documentation).toMatch("* [Install NodeJS](#install-nodejs)");
+
 
         console.log(documentation);
     });

@@ -3,7 +3,6 @@ import {Exporter} from "../Exporter";
 import {readFileSync} from "fs";
 import {join} from "path";
 import {Step} from "../../Step";
-import dedent = require("dedent");
 
 
 Handlebars.registerHelper("nestedTitle", (title: string, depth: number) => {
@@ -28,6 +27,6 @@ export class MarkdowExporter extends Exporter {
                 } else return {};
             })
         };
-        return dedent(template(data));
+        return template(data);
     }
 }
