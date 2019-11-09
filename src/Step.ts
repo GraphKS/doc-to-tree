@@ -1,4 +1,3 @@
-import {StepExport} from "./Exporter/StepExport";
 import {Tree} from "./Tree";
 
 export interface StepOption {
@@ -31,5 +30,17 @@ export class Step extends Tree {
                     note: (child as Step).note
                 }))
         };
+    }
+}
+
+export interface StepExport {
+    title: string
+    description?: string
+    note?: string
+    depth: number
+    nextSteps: Array<{ title: string, note?: string }>
+    snippet?: {
+        content: string
+        language: string
     }
 }
