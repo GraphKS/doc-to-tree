@@ -60,7 +60,6 @@ function createNestedProcedure() {
 describe("MarkdownExporter", () => {
     test("it give correct order", () => {
         const procedure = createSimpleProcedure();
-        const exporter = new MarkdowExporter(procedure);
         const actions = procedure.preOrder();  // This is a private method
         expect(actions).toStrictEqual([procedure, ...procedure.childrens]);
     });
@@ -84,13 +83,13 @@ describe("MarkdownExporter", () => {
         const exporter = new MarkdowExporter(procedure);
         const documentation = exporter.export();
 
-        expect(documentation).toMatch("* [Install NodeJS](#Install NodeJS)");
-        expect(documentation).toMatch("* [dev your app](#dev your app)");
-        expect(documentation).toMatch("* [Deployment](#Deployment)");
-        expect(documentation).toMatch("* [Mac](#Mac)");
-        expect(documentation).toMatch("* [Windows](#Windows)");
-        expect(documentation).toMatch("* [Linux](#Linux)");
-        expect(documentation).toMatch("* [Clever Cloud](#Clever Cloud)");
+        expect(documentation).toMatch("* [Install NodeJS](#install-nodejs)");
+        expect(documentation).toMatch("* [dev your app](#dev-your-app)");
+        expect(documentation).toMatch("* [Deployment](#deployment)");
+        expect(documentation).toMatch("* [Mac](#mac)");
+        expect(documentation).toMatch("* [Windows](#windows)");
+        expect(documentation).toMatch("* [Linux](#linux)");
+        expect(documentation).toMatch("* [Clever Cloud](#clever-cloud)");
         expect(documentation).toMatch("## Install clever cli");
 
         console.log(documentation);

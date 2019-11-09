@@ -8,7 +8,10 @@ import dedent = require("dedent");
 
 Handlebars.registerHelper("nestedTitle", (title: string, depth: number) => {
     return [...Array(depth).fill(null).map(() => "#"), " ", title].join("");
+});
 
+Handlebars.registerHelper("anchorLink", (target: string) => {
+    return `#${target.toLowerCase().replace(/ /g, "-")}`;
 });
 
 const templateDefinition = readFileSync(join(__dirname, "template.handlebars")).toString();

@@ -14,7 +14,7 @@ Written by
 {{#if nextSteps}}
 Next steps:
 {{#each nextSteps}}
-    * [{{title}}](#{{title}}){{#if note}}: {{note}}{{/if}}
+    * [{{title}}]({{anchorLink title}}){{#if note}}: {{note}}{{/if}}
 {{/each}}
 {{/if}}
 {{/with}}
@@ -36,7 +36,7 @@ Next steps:
 {{#if nextSteps}}
 Next steps:
 {{#each nextSteps}}
-* [{{title}}](#{{title}}){{#if note}}: {{note}}{{/if}}
+* [{{title}}]({{anchorLink title}}){{#if note}}: {{note}}{{/if}}
 {{/each}}
 {{/if}}
 
