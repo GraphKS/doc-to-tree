@@ -1,27 +1,27 @@
 {{#if procedure}}
 {{#with procedure}}
-# {{ title }}
+{{nestedTitle title depth}}
 Generated on {{ creationDate }}
 
 {{#if authors}}
-    Written by
-    {{#each authors}}
-        * {{this}}
-    {{/each}}
+Written by
+{{#each authors}}
+    * {{this}}
+{{/each}}
 {{/if}}
 
 {{description}}
 {{#if nextSteps}}
-    Next steps:
-    {{#each nextSteps}}
-        * [{{title}}](#{{title}}){{#if note}}: {{note}}{{/if}}
-    {{/each}}
+Next steps:
+{{#each nextSteps}}
+    * [{{title}}](#{{title}}){{#if note}}: {{note}}{{/if}}
+{{/each}}
 {{/if}}
 {{/with}}
 {{/if}}
 
 {{#each steps}}
-## {{title}}
+{{nestedTitle title depth}}
 
 {{#if description}}
 {{description}}

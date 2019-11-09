@@ -5,6 +5,12 @@ import {join} from "path";
 import {Step} from "../../Step";
 import dedent = require("dedent");
 
+
+Handlebars.registerHelper("nestedTitle", (title: string, depth: number) => {
+    return [...Array(depth).fill(null).map(() => "#"), " ", title].join("");
+
+});
+
 const templateDefinition = readFileSync(join(__dirname, "template.handlebars")).toString();
 
 const template = Handlebars.compile(templateDefinition, {preventIndent: true});
