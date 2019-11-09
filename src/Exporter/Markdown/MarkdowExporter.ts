@@ -14,6 +14,7 @@ export const MARKDOWN_EXPORT_TYPE = "Markdown";
 
 export class MarkdowExporter extends Exporter {
     public export(): string {
+        //TODO: refactor this with a cleaner structure
         const data = {
             steps: this.procedure.preOrder().map(step => {
                 if (step instanceof Procedure && step.isRoot()) {
