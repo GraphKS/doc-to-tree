@@ -1,29 +1,42 @@
-# {{ procedure.name }}
-Generated on {{ procedure.creationDate }}
+{{#if procedure}}
+{{#with procedure}}
+{{nestedTitle title depth}}
+Generated on {{ creationDate }}
 
-{{#if procedure.authors}}
+{{#if authors}}
 Written by
-{{#each procedure.authors}}
-    * {{name}}
+{{#each authors}}
+    * {{this}}
 {{/each}}
 {{/if}}
 
-{{procedure.description}}
-
-{{#each actions}}
-## {{title}}
-
 {{description}}
-{{note}}
+{{#if nextSteps}}
+Next steps:
+{{#each nextSteps}}
+    * [{{title}}]({{anchorLink title}}){{#if note}}: {{note}}{{/if}}
+{{/each}}
+{{/if}}
+{{/with}}
+{{/if}}
+
+{{#each steps}}
+{{nestedTitle title depth}}
+
+{{#if description}}
+{{description}}
+
+{{/if}}
 {{#if snippet}}
 ```{{snippet.language}}
 {{snippet.content}}
 ```
+
 {{/if}}
-{{#if edges}}
+{{#if nextSteps}}
 Next steps:
-{{#each edges}}
-* [{{target}}](#{{target}}){{#if note}}: {{note}}{{/if}}
+{{#each nextSteps}}
+* [{{title}}]({{anchorLink title}}){{#if note}}: {{note}}{{/if}}
 {{/each}}
 {{/if}}
 
