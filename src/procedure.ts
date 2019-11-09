@@ -1,5 +1,4 @@
 import {Step, StepExport, StepOption} from "./Step";
-import {Tree} from "./Tree";
 
 interface ProcedureOptions extends StepOption {
     authors?: Array<string>,
