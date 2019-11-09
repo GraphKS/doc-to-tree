@@ -26,6 +26,11 @@ export class Tree {
         }
     }
 
+    public depth(): number {
+        if (!this.parent) return 1;
+        else return this.parent.depth() + 1;
+    }
+
     public preOrder(): Array<Tree> {
         return [
             this,

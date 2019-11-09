@@ -24,6 +24,7 @@ export class Step extends Tree {
             title: this.title,
             description: this.description,
             note: this.note,
+            depth: this.depth(),
             nextSteps: this.childrens.filter(child => child instanceof Step)
                 .map(child => ({
                     title: (child as Step).title,
