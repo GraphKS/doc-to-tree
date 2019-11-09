@@ -8,11 +8,11 @@ export interface StepOption {
 }
 
 export class Step extends Tree {
-    public readonly description: string;
+    public readonly description?: string;
     public readonly note?: string;
     public readonly title: string;
 
-    constructor({description = "", title, note}: StepOption) {
+    constructor({title, description, note}: StepOption) {
         super();
         this.description = description;
         this.note = note;

@@ -1,6 +1,6 @@
 export interface StepExport {
     title: string
-    description: string
+    description?: string
     note?: string
     nextSteps: Array<{ title: string, note?: string }>
     snippet?: {

@@ -21,11 +21,15 @@ Next steps:
 {{#unless isRootProcedure}}
 ## {{title}}
 
+{{#if description}}
 {{description}}
+
+{{/if}}
 {{#if snippet}}
 ```{{snippet.language}}
 {{snippet.content}}
 ```
+
 {{/if}}
 {{#if nextSteps}}
 Next steps:
