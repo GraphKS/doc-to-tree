@@ -1,24 +1,26 @@
-{{#each steps}}
-{{#if isRootProcedure}}
+{{#if procedure}}
+{{#with procedure}}
 # {{ title }}
 Generated on {{ creationDate }}
 
 {{#if authors}}
-Written by
-{{#each authors}}
-    * {{name}}
-{{/each}}
+    Written by
+    {{#each authors}}
+        * {{this}}
+    {{/each}}
 {{/if}}
 
 {{description}}
 {{#if nextSteps}}
-Next steps:
-{{#each nextSteps}}
-    * [{{title}}](#{{title}}){{#if note}}: {{note}}{{/if}}
-{{/each}}
+    Next steps:
+    {{#each nextSteps}}
+        * [{{title}}](#{{title}}){{#if note}}: {{note}}{{/if}}
+    {{/each}}
 {{/if}}
+{{/with}}
 {{/if}}
-{{#unless isRootProcedure}}
+
+{{#each steps}}
 ## {{title}}
 
 {{#if description}}
@@ -37,6 +39,5 @@ Next steps:
 * [{{title}}](#{{title}}){{#if note}}: {{note}}{{/if}}
 {{/each}}
 {{/if}}
-{{/unless}}
 
 {{/each}}
