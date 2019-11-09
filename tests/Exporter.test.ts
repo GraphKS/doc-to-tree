@@ -1,6 +1,6 @@
 import {Procedure} from "../src/procedure";
 import {MarkdowExporter} from "../src/Exporter/Markdown/MarkdowExporter";
-import {Step} from "../src/Actions/Step";
+import {Step} from "../src/Step";
 
 function createSimpleProcedure(): Procedure {
     const start = new Step({
@@ -22,7 +22,7 @@ function createSimpleProcedure(): Procedure {
         description: "simple test",
         authors: ["Logtopus"]
     });
-    procedure.addStep(start, mid, end);
+    procedure.addChildren(start, mid, end);
     return procedure;
 }
 
@@ -31,7 +31,7 @@ describe("MarkdownExporter", () => {
         const procedure = createSimpleProcedure();
         const exporter = new MarkdowExporter(procedure);
         const actions = procedure.preOrder();  // This is a private method
-        expect(actions).toStrictEqual([procedure.steps[0], procedure.steps[1], procedure.steps[2]]);
+        expect(actions).toStrictEqual([procedure.childrens[0], procedure.childrens[1], procedure.childrens[2]]);
     });
     test("it generate markdown", () => {
         const procedure = createSimpleProcedure();
