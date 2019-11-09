@@ -39,8 +39,4 @@ export interface StepExport {
     note?: string
     depth: number
     nextSteps: Array<{ title: string, note?: string }>
-    snippet?: {
-        content: string
-        language: string
-    }
 }
