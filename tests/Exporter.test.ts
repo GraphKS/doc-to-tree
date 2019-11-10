@@ -33,7 +33,10 @@ function createNestedProcedure() {
     const installation = new Procedure({title: "Install NodeJS"});
 
     const mac = new Procedure({title: "Mac"});
-    mac.addChildren(new LoremStep({title: "install brew"}), new LoremStep({title: "brew install"}));
+    mac.addChildren(new LoremStep({
+        title: "install brew",
+        externalLinks: [{title: "brew website", url: "https://brew.sh/index_fr"}]
+    }), new LoremStep({title: "brew install"}));
     const windows = new Procedure({title: "Windows"});
     windows.addChildren(new LoremStep({title: "Download .exe"}), new LoremStep({title: "install from .exe"}));
     const linux = new Procedure({title: "Linux"});
@@ -86,6 +89,7 @@ describe("MarkdownExporter", () => {
         const documentation = exporter.export();
 
         expect(documentation).toMatch("* [Install NodeJS](#install-nodejs)");
+        expect(documentation).toMatch("* [brew website](https://brew.sh/index_fr)");
         expect(documentation).toMatch("* [dev your app](#dev-your-app)");
         expect(documentation).toMatch("* [Deployment](#deployment)");
         expect(documentation).toMatch("* [Mac](#mac)");
