@@ -19,10 +19,11 @@
   "homepage": "https://github.com/PPACI/logtopus-oss#readme",
   "devDependencies": {
     "@types/dedent": "^0.7.0",
+    "@types/glob": "^7.1.1",
+    "@types/graphlib": "^2.1.5",
     "@types/jest": "^24.0.21",
     "@types/js-yaml": "^3.12.1",
     "@types/node": "^12.12.6",
-    "@types/graphlib": "^2.1.5",
     "jest": "^24.9.0",
     "js-yaml": "^3.13.1",
     "ts-jest": "^24.1.0",
@@ -31,6 +32,7 @@
   "dependencies": {
     "ajv": "^6.10.2",
     "dedent": "^0.7.0",
+    "glob": "^7.1.6",
     "graphlib": "^2.1.7",
     "handlebars": "^4.5.1",
     "lorem-ipsum": "^2.0.3"

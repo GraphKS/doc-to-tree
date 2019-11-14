@@ -2,6 +2,9 @@ import {Step} from "../Step";
 import Ajv from "ajv";
 import {Procedure} from "../procedure";
 import {safeLoad} from "js-yaml";
+import {readFileSync} from "fs";
+import {dirname, resolve} from "path";
+
 
 const stepSchema = {
     type: "object",
@@ -26,26 +29,50 @@ const stepSchema = {
                 }
             }
         },
-        creationTimestamp: {type: "number"}
+        creationTimestamp: {type: "number"},
+        steps: {
+            type: "array",
+            items: {
+                type: "string"
+            }
+        }
     },
     required: ["title", "type", "description"]
 };
 
 const ajv = new Ajv();
 
-export function importSingleYaml(yamlString: string): Step {
+
+export function importYamlStep(path: string): Step {
+    const absPath = resolve(path);
+    const yamlString = readFileSync(absPath).toString();
     const data = safeLoad(yamlString);
     const valid = ajv.validate(stepSchema, data);
     if (!valid) {
         throw new Error(`Import Error. Can't validate schema \n${ajv.errorsText()}`);
     }
+
+    let step: Step | Procedure;
+
     switch (data.type) {
         case "step":
-            return new Step(data);
+            step = new Step(data);
+            break;
         case "procedure":
-            return new Procedure(data);
+            step = new Procedure(data);
+            break;
         default:
             throw new Error(`Import Error. Unsupported type ${data.type}`);
     }
+
+    // add child
+    if (step && data.steps && Array.isArray(data.steps)) {
+        (data.steps as Array<string>)
+            .map(childPath => resolve(dirname(path), childPath))
+            .map(path => importYamlStep(path))
+            .forEach(s => step.addChildren(s));
+    }
+
+    return step;
 
 }

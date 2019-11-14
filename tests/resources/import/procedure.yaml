@@ -1,0 +1,5 @@
+type: "procedure"
+title: "foo"
+description: "bar"
+authors:
+  - pierre
