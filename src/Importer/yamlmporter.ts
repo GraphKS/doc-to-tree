@@ -4,7 +4,7 @@ import {Procedure} from "../procedure";
 import {safeLoad} from "js-yaml";
 import {readFileSync} from "fs";
 import {dirname, resolve} from "path";
-
+import axios from "axios";
 
 const stepSchema = {
     type: "object",
@@ -42,10 +42,7 @@ const stepSchema = {
 
 const ajv = new Ajv();
 
-
-export function importYamlStep(path: string): Step {
-    const absPath = resolve(path);
-    const yamlString = readFileSync(absPath).toString();
+export async function importYamlStepString(yamlString: string, path: string): Promise<Step> {
     const data = safeLoad(yamlString);
     const valid = ajv.validate(stepSchema, data);
     if (!valid) {
@@ -67,12 +64,27 @@ export function importYamlStep(path: string): Step {
 
     // add child
     if (step && data.steps && Array.isArray(data.steps)) {
-        (data.steps as Array<string>)
-            .map(childPath => resolve(dirname(path), childPath))
-            .map(path => importYamlStep(path))
-            .forEach(s => step.addChildren(s));
+        for (const child of data.steps) {
+            try {
+                // it might be a remote procedure
+                const url = new URL(child);
+                const resp = await axios.get(url.href);
+                const data = resp.data;
+                step.addChildren(await importYamlStepString(data, path));
+            } catch (e) {
+                const yamlPath = resolve(dirname(path), child);
+                step.addChildren(await importYamlStep(yamlPath));
+            }
+        }
     }
-
     return step;
+
+}
+
+
+export async function importYamlStep(path: string): Promise<Step> {
+    const absPath = resolve(path);
+    const yamlString = readFileSync(absPath).toString();
+    return importYamlStepString(yamlString, path);
 
 }
