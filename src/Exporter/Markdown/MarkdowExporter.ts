@@ -3,6 +3,7 @@ import {Exporter} from "../Exporter";
 import {readFileSync} from "fs";
 import {join} from "path";
 import {Step} from "../../Step";
+import {Procedure} from "../../procedure";
 
 
 Handlebars.registerHelper("nestedTitle", (title: string, depth: number) => {
@@ -28,5 +29,10 @@ export class MarkdowExporter extends Exporter {
             })
         };
         return template(data);
+    }
+
+    public static export(procedure: Procedure): string {
+        const exporter = new this(procedure);
+        return exporter.export();
     }
 }
