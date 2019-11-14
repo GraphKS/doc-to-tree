@@ -3,6 +3,7 @@ import {Step} from "../../Step";
 import {readFileSync} from "fs";
 import {join} from "path";
 import * as Handlebars from "handlebars";
+import {Procedure} from "../../procedure";
 
 const templateDefinition = readFileSync(join(__dirname, "template.handlebars")).toString();
 
@@ -21,5 +22,10 @@ export class DotExporter extends Exporter {
             })
         };
         return template(data);
+    }
+
+    public static export(procedure: Procedure): string {
+        const exporter = new this(procedure);
+        return exporter.export();
     }
 }

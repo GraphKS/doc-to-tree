@@ -1,4 +1,4 @@
-import {Step} from "../Step";
+import {externalLink, Step} from "../Step";
 import {LoremIpsum} from "lorem-ipsum";
 
 const lorem = new LoremIpsum({
@@ -13,11 +13,12 @@ const lorem = new LoremIpsum({
 });
 
 export class LoremStep extends Step {
-    constructor({title, note}: { title: string, note?: string }) {
+    constructor({title, note, externalLinks}: { title: string, note?: string, externalLinks?: Array<externalLink> }) {
         super({
             title,
             note,
-            description: lorem.generateParagraphs(2)
+            description: lorem.generateParagraphs(2),
+            externalLinks
         });
     }
 }

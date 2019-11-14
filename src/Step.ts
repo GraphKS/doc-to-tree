@@ -1,21 +1,28 @@
 import {Tree} from "./Tree";
 
+export interface externalLink {
+    title: string
+    url: string
+}
 export interface StepOption {
     description?: string
     note?: string
     title: string
+    externalLinks?: Array<externalLink>
 }
 
 export class Step extends Tree {
     public readonly description?: string;
     public readonly note?: string;
     public readonly title: string;
+    public readonly externalLinks: Array<externalLink>;
 
-    constructor({title, description, note}: StepOption) {
+    constructor({title, description, note, externalLinks = []}: StepOption) {
         super();
         this.description = description;
         this.note = note;
         this.title = title;
+        this.externalLinks = externalLinks;
     }
 
     public export(): StepExport {
@@ -28,7 +35,8 @@ export class Step extends Tree {
                 .map(child => ({
                     title: (child as Step).title,
                     note: (child as Step).note
-                }))
+                })),
+            externalLinks: this.externalLinks
         };
     }
 }
@@ -39,4 +47,9 @@ export interface StepExport {
     note?: string
     depth: number
     nextSteps: Array<{ title: string, note?: string }>
+    externalLinks?: Array<externalLink>
+}
+
+export function isStepExport(object: any): object is StepExport {
+    return ("title" in object && "description" in object && "depth" in object && "nextSteps" in object);
 }

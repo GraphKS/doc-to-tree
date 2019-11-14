@@ -1,0 +1,5 @@
+type: "step"
+title: "step2"
+description: "step2"
+steps:
+  - step3.yaml
