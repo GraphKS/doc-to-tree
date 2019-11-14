@@ -2,6 +2,8 @@ import {importYamlStep} from "../src/Importer/yamlmporter";
 import {Procedure} from "../src/procedure";
 import {resolve} from "path";
 import {Step} from "../src/Step";
+import {DotExporter} from "../src/Exporter/Dot/DotExporter";
+import {MarkdowExporter} from "../src/Exporter/Markdown/MarkdowExporter";
 
 describe("YamlImport", () => {
     test("it import step", () => {
@@ -40,6 +42,11 @@ describe("YamlImport", () => {
         expect(step.description).toBe("bar");
         expect((step.childrens[0] as Step).title).toBe("step1");
         expect((step.childrens[1] as Step).title).toBe("step2");
+
+        // for reference and demo
+        console.log(DotExporter.export(step));
+
+        console.log(MarkdowExporter.export(step))
     });
 
 });
