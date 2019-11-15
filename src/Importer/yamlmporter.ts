@@ -42,13 +42,15 @@ const stepSchema = {
 
 const ajv = new Ajv();
 
-export async function importYamlStepString(yamlString: string, path: string): Promise<Step> {
-    const data = safeLoad(yamlString);
-    const valid = ajv.validate(stepSchema, data);
-    if (!valid) {
+function loadYaml(yaml: string) {
+    const data = safeLoad(yaml);
+    if (!ajv.validate(stepSchema, data)) {
         throw new Error(`Import Error. Can't validate schema \n${ajv.errorsText()}`);
     }
+    return data;
+}
 
+function loadStep(data: any): Step {
     let step: Step | Procedure;
 
     switch (data.type) {
@@ -61,17 +63,39 @@ export async function importYamlStepString(yamlString: string, path: string): Pr
         default:
             throw new Error(`Import Error. Unsupported type ${data.type}`);
     }
+    return step;
+}
+
+export async function importYamlDistantFile(url: string) {
+    const resp = await axios.get(url);
+    const data = loadYaml(resp.data);
+    const step = loadStep(data);
 
     // add child
     if (step && data.steps && Array.isArray(data.steps)) {
         for (const child of data.steps) {
-            try {
-                // it might be a remote procedure
-                const url = new URL(child);
-                const resp = await axios.get(url.href);
-                const data = resp.data;
-                step.addChildren(await importYamlStepString(data, path));
-            } catch (e) {
+            if ((child as string).startsWith("http")) {
+                const children = await importYamlDistantFile(child);
+                step.addChildren(children);
+            } else {
+                throw new Error("Import Error. Distant procedure can only import distant procedure.");
+            }
+        }
+    }
+    return step;
+}
+
+export async function importYamlStepString(yamlString: string, path: string): Promise<Step> {
+    const data = loadYaml(yamlString);
+    const step = loadStep(data);
+
+    // add child
+    if (step && data.steps && Array.isArray(data.steps)) {
+        for (const child of data.steps) {
+            if ((child as string).startsWith("http")) {
+                const children = await importYamlDistantFile(child);
+                step.addChildren(children);
+            } else {
                 const yamlPath = resolve(dirname(path), child);
                 step.addChildren(await importYamlStep(yamlPath));
             }
