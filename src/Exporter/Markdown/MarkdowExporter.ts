@@ -1,7 +1,7 @@
 import * as Handlebars from "handlebars";
 import {Exporter} from "../Exporter";
 import {readFileSync} from "fs";
-import {join} from "path";
+import {resolve} from "path";
 import {Step} from "../../Step";
 import {Procedure} from "../../procedure";
 
@@ -14,7 +14,8 @@ Handlebars.registerHelper("anchorLink", (target: string) => {
     return `#${target.toLowerCase().replace(/ /g, "-")}`;
 });
 
-const templateDefinition = readFileSync(join(__dirname, "template.handlebars")).toString();
+const resources = resolve(__dirname, "../../../", "resources/template/exporter/markdown");
+const templateDefinition = readFileSync(resolve(resources, "template.handlebars")).toString();
 
 const template = Handlebars.compile(templateDefinition, {preventIndent: true});
 
