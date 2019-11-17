@@ -1,11 +1,14 @@
 import {Exporter} from "../Exporter";
 import {Step} from "../../Step";
 import {readFileSync} from "fs";
-import {join} from "path";
+import {resolve} from "path";
 import * as Handlebars from "handlebars";
 import {Procedure} from "../../procedure";
 
-const templateDefinition = readFileSync(join(__dirname, "template.handlebars")).toString();
+
+const resources = resolve(__dirname, "../../../", "resources/template/exporter/dot");
+
+const templateDefinition = readFileSync(resolve(resources, "template.handlebars")).toString();
 
 const template = Handlebars.compile(templateDefinition, {preventIndent: true});
 
