@@ -65,6 +65,7 @@ describe("MarkdownImport", () => {
         expect(step.childrens[0]).toHaveProperty("title", "Intro");
         expect((<Step>step.childrens[0]).description).toMatch("This is the **introduction**.");
         expect((<Step>step.childrens[0]).description).toMatch("URL");
+        expect((<Step>step.childrens[0]).description).toMatch("* list1");
         expect(step.childrens[1]).toHaveProperty("title", "Code");
         expect((<Step>step.childrens[1]).description).toMatch("Hello world");
         expect((<Step>step.childrens[1]).description).toMatch("```shell");

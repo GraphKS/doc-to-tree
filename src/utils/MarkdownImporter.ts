@@ -21,7 +21,7 @@ function TokenToContent(tokens: Array<Token>): string {
     tokens.forEach(token => {
         switch (token.type) {
             case "paragraph":
-                content += `${token.text}\n`;
+                content += `${token.text}\n\n`;
                 break;
             case "code":
                 content +=
@@ -29,7 +29,25 @@ function TokenToContent(tokens: Array<Token>): string {
 \`\`\`${token.lang || ""}
 ${token.text}
 \`\`\`
+
 `;
+                break;
+            case "list_item_start":
+                //TODO: how to handle sublist?
+                content += "* ";
+                break;
+            case "list_item_end":
+                content += "\n";
+                break;
+            case "list_end":
+                content += "\n";
+                break;
+            case "text":
+                content += token.text;
+                break;
+            case "space":
+                break;
+            default:
                 break;
         }
     });
