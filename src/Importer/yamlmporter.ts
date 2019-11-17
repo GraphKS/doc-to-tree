@@ -85,7 +85,9 @@ export async function importYamlDistantFile(url: string) {
     return step;
 }
 
-export async function importYamlStepString(yamlString: string, path: string): Promise<Step> {
+export async function importYamlLocalFile(path: string): Promise<Step> {
+    const absPath = resolve(path);
+    const yamlString = readFileSync(absPath).toString();
     const data = loadYaml(yamlString);
     const step = loadStep(data);
 
@@ -107,8 +109,6 @@ export async function importYamlStepString(yamlString: string, path: string): Pr
 
 
 export async function importYamlStep(path: string): Promise<Step> {
-    const absPath = resolve(path);
-    const yamlString = readFileSync(absPath).toString();
-    return importYamlStepString(yamlString, path);
-
+    if (path.startsWith("http")) return importYamlDistantFile(path);
+    else return importYamlLocalFile(path);
 }

@@ -1,4 +1,5 @@
 import {isStepExport, Step, StepExport, StepOption} from "./Step";
+import {importYamlStep} from "./Importer/yamlmporter";
 
 interface ProcedureOptions extends StepOption {
     authors?: Array<string>,
@@ -22,6 +23,12 @@ export class Procedure extends Step {
             creationTimestamp: this.creationTimestamp,
             creationUtcString: new Date(this.creationTimestamp).toUTCString()
         };
+    }
+
+    public static async fromYaml(path: string): Promise<Procedure> {
+        const procedure = await importYamlStep(path);
+        if (procedure instanceof Procedure) return procedure;
+        else throw new Error("Import Error. This file doesn't describe a procedure");
     }
 }
 
