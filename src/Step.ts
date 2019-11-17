@@ -4,6 +4,7 @@ export interface externalLink {
     title: string
     url: string
 }
+
 export interface StepOption {
     description?: string
     note?: string
@@ -51,5 +52,5 @@ export interface StepExport {
 }
 
 export function isStepExport(object: any): object is StepExport {
-    return ("title" in object && "description" in object && "depth" in object && "nextSteps" in object);
+    return (object instanceof Object && "title" in object && "description" in object && "depth" in object && "nextSteps" in object);
 }

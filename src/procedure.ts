@@ -1,5 +1,5 @@
 import {isStepExport, Step, StepExport, StepOption} from "./Step";
-import {importYamlStep} from "./Importer/yamlmporter";
+import {importYamlStep} from "./utils/yamlmporter";
 
 interface ProcedureOptions extends StepOption {
     authors?: Array<string>,
