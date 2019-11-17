@@ -18,6 +18,7 @@ function isStep(object: any): object is Step {
 
 function TokenToContent(tokens: Array<Token>): string {
     let content = "";
+    let listState = -1;
     tokens.forEach(token => {
         switch (token.type) {
             case "paragraph":
@@ -32,15 +33,18 @@ ${token.text}
 
 `;
                 break;
+            case "list_start":
+                listState += 1;
+                break;
             case "list_item_start":
-                //TODO: how to handle sublist?
-                content += "* ";
+                content += "\n"+" ".repeat(2 * listState) + "* ";
                 break;
-            case "list_item_end":
-                content += "\n";
-                break;
+            // case "list_item_end":
+            //     content += "\n";
+            //     break;
             case "list_end":
-                content += "\n";
+                listState -= 1;
+                // content += "\n";
                 break;
             case "text":
                 content += token.text;
