@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import {Command} from "commander";
 import {Procedure} from "../procedure";
 import {Exporter} from "../Exporter/Exporter";
