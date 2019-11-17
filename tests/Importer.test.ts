@@ -74,4 +74,8 @@ describe("MarkdownImport", () => {
 
 
     });
+    test("it import remote doc", async ()=>{
+        const steps = await importMarkdownStep("https://raw.githubusercontent.com/markedjs/marked/master/README.md");
+        expect(steps).toHaveLength(1)
+    })
 });
