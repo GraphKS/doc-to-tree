@@ -14,6 +14,7 @@ export class Procedure extends Step {
         super({title, description, note});
         this.authors = authors;
         this.creationTimestamp = creationTimestamp;
+        this.type = "procedure";
     }
 
     public export(): ProcedureExport {

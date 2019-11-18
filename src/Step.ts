@@ -24,6 +24,7 @@ export class Step extends Tree {
         this.note = note;
         this.title = title;
         this.externalLinks = externalLinks;
+        this.type = "step"
     }
 
     public export(): StepExport {

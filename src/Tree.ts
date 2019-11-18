@@ -1,6 +1,8 @@
 export class Tree {
     public childrens: Array<Tree> = [];
     public parent?: Tree;
+    public type: string = "tree";
+
 
     public isRoot(): boolean {
         return this.parent == undefined;
