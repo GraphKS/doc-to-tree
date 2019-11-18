@@ -129,13 +129,19 @@ describe("DotExporter", () => {
 
 describe("YamlExporter", () => {
     test("it generate yaml", () => {
-        const step = new Step({title: "foo", description: "hello **world**"});
+        const step = new Step({
+            title: "foo",
+            description: "hello **world**"
+        });
+        step.addChildren(new Step({title: "foo//-bar"}));
         const yaml = YamlExporter.export(step);
         const expected = `
 type: step
 title: foo
 description:|
-hello **world**        
+hello **world**
+steps:
+  - ./foo-bar.yaml    
         `.trim();
         expect(yaml).toBe(expected);
     });

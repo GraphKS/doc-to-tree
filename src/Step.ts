@@ -24,7 +24,7 @@ export class Step extends Tree {
         this.note = note;
         this.title = title;
         this.externalLinks = externalLinks;
-        this.type = "step"
+        this.type = "step";
     }
 
     public export(): StepExport {
@@ -41,6 +41,10 @@ export class Step extends Tree {
             externalLinks: this.externalLinks
         };
     }
+}
+
+export function isStep(object: any): object is Step {
+    return object instanceof Step;
 }
 
 export interface StepExport {
