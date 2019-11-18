@@ -19,7 +19,7 @@ const templateDefinition = readFileSync(resolve(resources, "template.handlebars"
 
 const template = Handlebars.compile(templateDefinition, {preventIndent: true});
 
-export class MarkdowExporter extends Exporter {
+export class MarkdowExporter extends Exporter<Procedure> {
     public export(): string {
         const data = {
             procedure: this.procedure.export(),

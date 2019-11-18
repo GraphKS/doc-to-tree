@@ -1,8 +1,7 @@
-import {Procedure} from "../procedure";
 import {writeFileSync} from "fs";
 
-export abstract class Exporter {
-    constructor(protected procedure: Procedure) {
+export abstract class Exporter<T> {
+    constructor(protected procedure: T) {
     }
 
     public abstract export(): string
