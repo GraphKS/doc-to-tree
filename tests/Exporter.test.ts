@@ -3,6 +3,7 @@ import {MarkdowExporter} from "../src/Exporter/Markdown/MarkdowExporter";
 import {DotExporter} from "../src/Exporter/Dot/DotExporter";
 import {LoremStep} from "../src/Steps/LoremStep";
 import {Step} from "../src/Step";
+import {YamlExporter} from "../src/Exporter/Yaml/YamlExporter";
 
 function createSimpleProcedure(): Procedure {
     const start = new Step({
@@ -123,5 +124,19 @@ describe("DotExporter", () => {
 
 
         console.log(documentation);
+    });
+});
+
+describe("YamlExporter", () => {
+    test("it generate yaml", () => {
+        const step = new Step({title: "foo", description: "hello **world**"});
+        const yaml = YamlExporter.export(step);
+        const expected = `
+type: step
+title: foo
+description:|
+hello **world**        
+        `.trim();
+        expect(yaml).toBe(expected);
     });
 });
