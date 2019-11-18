@@ -1,18 +1,20 @@
 import {Exporter} from "../Exporter";
 import {Step} from "../../Step";
-import {readFileSync} from "fs";
-import {resolve} from "path";
 import * as Handlebars from "handlebars";
 import {Procedure} from "../../procedure";
 
 
-const resources = resolve(__dirname, "../../../", "resources/template/exporter/dot");
+const templateDefinition = `
+digraph "{{title}}" {
+{{#each edges}}
+    "{{source}}"->"{{target}}"
+{{/each}}
+}
+`;
 
-const templateDefinition = readFileSync(resolve(resources, "template.handlebars")).toString();
+const template = Handlebars.compile(templateDefinition.trim(), {preventIndent: true});
 
-const template = Handlebars.compile(templateDefinition, {preventIndent: true});
-
-export class DotExporter extends Exporter {
+export class DotExporter extends Exporter<Procedure> {
     public export(): string {
         const data = {
             title: this.procedure.title,
