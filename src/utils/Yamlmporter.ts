@@ -76,7 +76,7 @@ export async function importYamlDistantFile(url: string) {
         for (const child of data.steps) {
             if ((child as string).startsWith("http")) {
                 const children = await importYamlDistantFile(child);
-                step.addChildren(children);
+                step.addNextSteps(children);
             } else {
                 throw new Error("Import Error. Distant procedure can only import distant procedure.");
             }
@@ -96,10 +96,10 @@ export async function importYamlLocalFile(path: string): Promise<Step> {
         for (const child of data.steps) {
             if ((child as string).startsWith("http")) {
                 const children = await importYamlDistantFile(child);
-                step.addChildren(children);
+                step.addNextSteps(children);
             } else {
                 const yamlPath = resolve(dirname(path), child);
-                step.addChildren(await importYamlStep(yamlPath));
+                step.addNextSteps(await importYamlStep(yamlPath));
             }
         }
     }

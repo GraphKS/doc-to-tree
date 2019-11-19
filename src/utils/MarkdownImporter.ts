@@ -76,7 +76,7 @@ function tokenToSteps(depth: number, tokens: Array<Token>): Array<Step> {
                 const contentString = TokenToContent(content);
                 if (section[0].text == undefined) return;
                 const step = new Step({title: section[0].text, description: contentString});
-                step.addChildren(...childrens);
+                step.addNextSteps(...childrens);
                 return step;
             }
         })

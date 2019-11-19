@@ -44,5 +44,5 @@ export class YamlExporter extends Exporter<Step> {
 /*
 TODO: Export a procedure
 Write a method to parse the procedure tree and export each step.
-Each step should be saved with a filename corresponding to the steps' name of its parent
+Each step should be saved with a filename corresponding to the nextSteps' name of its parent
 */

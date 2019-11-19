@@ -19,7 +19,7 @@ export class Step {
     public readonly externalLinks: Array<externalLink>;
     authors: Array<string>;
     creationTimestamp: number;
-    public steps: Array<Step> = [];
+    public nextSteps: Array<Step> = [];
     public parent?: Step;
 
     constructor({title, description, note, externalLinks = [], authors = [], creationTimestamp = Date.now()}: StepOption) {
@@ -35,10 +35,10 @@ export class Step {
         return this.parent == undefined;
     }
 
-    public addChildren(...targets: Step[]) {
+    public addNextSteps(...targets: Step[]) {
         targets.forEach(target => {
             target.parent = this;
-            this.steps.push(target);
+            this.nextSteps.push(target);
         });
     }
 
@@ -48,7 +48,7 @@ export class Step {
             description: this.description,
             note: this.note,
             depth: this.depth(),
-            nextSteps: this.steps
+            nextSteps: this.nextSteps
                 .map(step => ({
                     title: step.title,
                     note: step.note
@@ -63,12 +63,12 @@ export class Step {
     public getNextSibling(): Step | null {
         if (this.parent == undefined) return null;
         else {
-            const index = this.parent.steps.indexOf(this);
+            const index = this.parent.nextSteps.indexOf(this);
             if (index == -1) {
                 throw new Error("Step Error. Can't find this node in parent children");
             }
-            if (this.parent.steps.length > index + 1) {
-                return this.parent.steps[index + 1];
+            if (this.parent.nextSteps.length > index + 1) {
+                return this.parent.nextSteps[index + 1];
             } else return null;
         }
     }
@@ -81,13 +81,13 @@ export class Step {
     public preOrder(): Array<Step> {
         return [
             this,
-            ...this.steps.flatMap(child => child.preOrder())
+            ...this.nextSteps.flatMap(child => child.preOrder())
         ];
     }
 
     public postOrder(): Array<Step> {
         return [
-            ...this.steps.flatMap(child => child.preOrder()),
+            ...this.nextSteps.flatMap(child => child.preOrder()),
             this
         ];
     }

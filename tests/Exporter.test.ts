@@ -133,7 +133,7 @@ describe("YamlExporter", () => {
             title: "foo",
             description: "hello **world**"
         });
-        step.addChildren(new Step({title: "foo//-bar"}));
+        step.addNextSteps(new Step({title: "foo//-bar"}));
         const yaml = YamlExporter.export(step);
         const expected = `
 type: step
