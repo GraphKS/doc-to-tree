@@ -13,7 +13,7 @@ describe("YamlImport", () => {
         expect(step.description).toBe("bar");
     });
 
-    test("it import procedure", async () => {
+    test("it import step with author", async () => {
         const yamlPath = resolve(__dirname, "resources", "import", "procedure.yaml");
         const step = await importYamlStep(yamlPath);
         expect(step.title).toBe("foo");
@@ -27,11 +27,6 @@ describe("YamlImport", () => {
     });
     test("it doesn't import missing description", async () => {
         const yamlPath = resolve(__dirname, "resources", "import", "missingDesc.yaml");
-        await expect(importYamlStep(yamlPath)).rejects.toBeDefined();
-    });
-
-    test("it doesn't import invalid step", async () => {
-        const yamlPath = resolve(__dirname, "resources", "import", "invalidStep.yaml");
         await expect(importYamlStep(yamlPath)).rejects.toBeDefined();
     });
 
@@ -51,7 +46,7 @@ describe("YamlImport", () => {
 });
 
 describe("MarkdownImport", () => {
-    test("it import markdown procedure", async () => {
+    test("it import markdown step", async () => {
         const mdPath = resolve(__dirname, "resources", "import", "procedure.md");
         const steps = await importMarkdownStep(mdPath);
         expect(steps).toHaveLength(1);

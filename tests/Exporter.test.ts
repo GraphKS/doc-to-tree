@@ -135,7 +135,6 @@ describe("YamlExporter", () => {
         step.addNextSteps(new Step({title: "foo//-bar"}));
         const yaml = YamlExporter.export(step);
         const expected = `
-type: step
 title: foo
 description:|
 hello **world**

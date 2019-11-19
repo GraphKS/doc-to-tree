@@ -1,4 +1,4 @@
-type: "procedure"
+type: "step"
 title: "foo"
 description: "bar"
 authors:

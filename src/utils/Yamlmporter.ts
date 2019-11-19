@@ -1,6 +1,5 @@
 import {Step} from "../Step";
 import Ajv from "ajv";
-import {Procedure} from "../procedure";
 import {safeLoad} from "js-yaml";
 import {readFileSync} from "fs";
 import {dirname, resolve} from "path";
@@ -9,7 +8,6 @@ import axios from "axios";
 const stepSchema = {
     type: "object",
     properties: {
-        type: {type: "string"},
         title: {type: "string"},
         description: {type: "string"},
         note: {type: "string"},
@@ -50,26 +48,10 @@ function loadYaml(yaml: string) {
     return data;
 }
 
-function loadStep(data: any): Step {
-    let step: Step | Procedure;
-
-    switch (data.type) {
-        case "step":
-            step = new Step(data);
-            break;
-        case "procedure":
-            step = new Procedure(data);
-            break;
-        default:
-            throw new Error(`Import Error. Unsupported type ${data.type}`);
-    }
-    return step;
-}
-
 export async function importYamlDistantFile(url: string) {
     const resp = await axios.get(url);
     const data = loadYaml(resp.data);
-    const step = loadStep(data);
+    const step = new Step(data);
 
     // add child
     if (step && data.steps && Array.isArray(data.steps)) {
@@ -78,7 +60,7 @@ export async function importYamlDistantFile(url: string) {
                 const children = await importYamlDistantFile(child);
                 step.addNextSteps(children);
             } else {
-                throw new Error("Import Error. Distant procedure can only import distant procedure.");
+                throw new Error("Import Error. Distant step can only import distant step.");
             }
         }
     }
@@ -89,7 +71,7 @@ export async function importYamlLocalFile(path: string): Promise<Step> {
     const absPath = resolve(path);
     const yamlString = readFileSync(absPath).toString();
     const data = loadYaml(yamlString);
-    const step = loadStep(data);
+    const step = new Step(data);
 
     // add child
     if (step && data.steps && Array.isArray(data.steps)) {
