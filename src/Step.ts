@@ -8,6 +8,8 @@ export interface StepOption {
     note?: string
     title: string
     externalLinks?: Array<externalLink>
+    authors?: Array<string>,
+    creationTimestamp?: number,
 }
 
 export class Step {
@@ -15,14 +17,18 @@ export class Step {
     public readonly note?: string;
     public readonly title: string;
     public readonly externalLinks: Array<externalLink>;
+    authors: Array<string>;
+    creationTimestamp: number;
     public steps: Array<Step> = [];
     public parent?: Step;
 
-    constructor({title, description, note, externalLinks = []}: StepOption) {
+    constructor({title, description, note, externalLinks = [], authors = [], creationTimestamp = Date.now()}: StepOption) {
         this.description = description;
         this.note = note;
         this.title = title;
         this.externalLinks = externalLinks;
+        this.authors = authors;
+        this.creationTimestamp = creationTimestamp;
     }
 
     public isRoot(): boolean {
@@ -47,7 +53,10 @@ export class Step {
                     title: step.title,
                     note: step.note
                 })),
-            externalLinks: this.externalLinks
+            externalLinks: this.externalLinks,
+            authors: this.authors,
+            creationTimestamp: this.creationTimestamp,
+            creationUtcString: new Date(this.creationTimestamp).toUTCString()
         };
     }
 
@@ -95,6 +104,9 @@ export interface StepExport {
     depth: number
     nextSteps: Array<{ title: string, note?: string }>
     externalLinks?: Array<externalLink>
+    authors: Array<string>
+    creationTimestamp: number
+    creationUtcString: string
 }
 
 export function isStepExport(object: any): object is StepExport {
