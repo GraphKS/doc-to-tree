@@ -4,7 +4,6 @@ import {isStep, Step} from "../../Step";
 import sanitize = require("sanitize-filename");
 
 const templateDefinition = `
-type: {{type}}
 title: {{title}}
 description:|
 {{description}}
@@ -26,11 +25,10 @@ export class YamlExporter extends Exporter<Step> {
 
     public export(): string {
         const data = {
-            title: this.procedure.title,
-            type: this.procedure.type,
+            title: this.step.title,
             stepPathPrefix: this.stepPathPrefix,
-            description: this.procedure.description,
-            childrens: this.procedure.childrens.filter(isStep).map(child => sanitize(child.title))
+            description: this.step.description,
+            childrens: this.step.nextSteps.filter(isStep).map(step => sanitize(step.title))
         };
         return template(data).trim();
     }
@@ -42,7 +40,7 @@ export class YamlExporter extends Exporter<Step> {
 }
 
 /*
-TODO: Export a procedure
-Write a method to parse the procedure tree and export each step.
-Each step should be saved with a filename corresponding to the steps' name of its parent
+TODO: Export a step
+Write a method to parse the step tree and export each step.
+Each step should be saved with a filename corresponding to the nextSteps' name of its parent
 */

@@ -3,7 +3,6 @@ import {Exporter} from "../Exporter";
 import {readFileSync} from "fs";
 import {resolve} from "path";
 import {Step} from "../../Step";
-import {Procedure} from "../../procedure";
 
 
 Handlebars.registerHelper("nestedTitle", (title: string, depth: number) => {
@@ -19,21 +18,19 @@ const templateDefinition = readFileSync(resolve(resources, "template.handlebars"
 
 const template = Handlebars.compile(templateDefinition, {preventIndent: true});
 
-export class MarkdowExporter extends Exporter<Procedure> {
+export class MarkdowExporter extends Exporter<Step> {
     public export(): string {
         const data = {
-            procedure: this.procedure.export(),
-            steps: this.procedure.preOrder().filter(step => !step.isRoot()).map(step => {
-                if (step instanceof Step) {
-                    return step.export();
-                } else return {};
+            procedure: this.step.export(),
+            steps: this.step.preOrder().filter(step => !step.isRoot()).map(step => {
+                return step.export();
             })
         };
         return template(data);
     }
 
-    public static export(procedure: Procedure): string {
-        const exporter = new this(procedure);
+    public static export(step: Step): string {
+        const exporter = new this(step);
         return exporter.export();
     }
 }

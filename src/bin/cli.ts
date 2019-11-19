@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import {Command} from "commander";
-import {Procedure} from "../procedure";
+import {Procedure} from "../step";
 import {Exporter} from "../Exporter/Exporter";
 import {MarkdowExporter} from "../Exporter/Markdown/MarkdowExporter";
 import {DotExporter} from "../Exporter/Dot/DotExporter";
@@ -9,8 +9,8 @@ import {resolve} from "path";
 const program = new Command("Logtopus");
 
 program
-    .command("generate <type> <procedure>")
-    .description("Generate an output of a specific type of the procedure.")
+    .command("generate <type> <step>")
+    .description("Generate an output of a specific type of the step.")
     .option("-o, --output <output>", "output in a file. Like: './output/doc.md'")
     .action(async (type: string, procedure: string, options: any) => {
         await generate(type, procedure, options).catch(console.log);

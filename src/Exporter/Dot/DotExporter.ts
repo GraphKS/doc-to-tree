@@ -1,7 +1,6 @@
 import {Exporter} from "../Exporter";
 import {Step} from "../../Step";
 import * as Handlebars from "handlebars";
-import {Procedure} from "../../procedure";
 
 
 const templateDefinition = `
@@ -14,23 +13,20 @@ digraph "{{title}}" {
 
 const template = Handlebars.compile(templateDefinition.trim(), {preventIndent: true});
 
-export class DotExporter extends Exporter<Procedure> {
+export class DotExporter extends Exporter<Step> {
     public export(): string {
         const data = {
-            title: this.procedure.title,
-            edges: this.procedure.preOrder().flatMap(step => {
-                if (step instanceof Step) {
-                    return step.childrens.map(child => {
-                        if (child instanceof Step) return {source: step.title, target: child.title};
-                    });
-                }
-            })
+            title: this.step.title,
+            edges: this.step.preOrder().flatMap(step => step.nextSteps.map(step => ({
+                source: this.step.title,
+                target: step.title
+            })))
         };
         return template(data);
     }
 
-    public static export(procedure: Procedure): string {
-        const exporter = new this(procedure);
+    public static export(step: Step): string {
+        const exporter = new this(step);
         return exporter.export();
     }
 }
