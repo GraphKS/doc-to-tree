@@ -74,7 +74,7 @@ export class Step {
     }
 
     public depth(): number {
-        if (!this.parent) return 1;
+        if (!this.parent) return 0;
         else return this.parent.depth() + 1;
     }
 

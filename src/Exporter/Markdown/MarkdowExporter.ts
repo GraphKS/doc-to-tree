@@ -6,7 +6,7 @@ import {Step} from "../../Step";
 
 
 Handlebars.registerHelper("nestedTitle", (title: string, depth: number) => {
-    return [...Array(depth).fill(null).map(() => "#"), " ", title].join("");
+    return [...Array(depth+1).fill(null).map(() => "#"), " ", title].join("");
 });
 
 Handlebars.registerHelper("anchorLink", (target: string) => {

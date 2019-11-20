@@ -4,13 +4,15 @@ import {isStep, Step} from "../../Step";
 import sanitize = require("sanitize-filename");
 
 const templateDefinition = `
-title: {{title}}
-description:|
-{{description}}
+title: {{{title}}}
+description: |
+{{{description}}}
+{{#if childrens}}
 steps:
 {{#each childrens}}
-  - {{../stepPathPrefix}}/{{this}}.yaml
+  - {{../stepPathPrefix}}/{{{this}}}.yaml
 {{/each}}
+{{/if}}
 `;
 
 const template = Handlebars.compile(templateDefinition, {preventIndent: true});

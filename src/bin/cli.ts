@@ -1,10 +1,15 @@
 #!/usr/bin/env node
 import {Command} from "commander";
-import {Procedure} from "../step";
+import {Step} from "../step";
 import {Exporter} from "../Exporter/Exporter";
 import {MarkdowExporter} from "../Exporter/Markdown/MarkdowExporter";
 import {DotExporter} from "../Exporter/Dot/DotExporter";
-import {resolve} from "path";
+import {dirname, resolve} from "path";
+import {importYamlStep} from "../utils/Yamlmporter";
+import {importMarkdownStep} from "../utils/MarkdownImporter";
+import {YamlExporter} from "../Exporter/Yaml/YamlExporter";
+import {mkdirSync} from "fs";
+import sanitize = require("sanitize-filename");
 
 const program = new Command("Logtopus");
 
@@ -16,14 +21,22 @@ program
         await generate(type, procedure, options).catch(console.log);
     });
 
+program
+    .command("import-markdown <doc>")
+    .description("Generate the Yaml file structure from a markdown documentation")
+    .option("-o, --output <output>", "output in a directory. Like: './output'")
+    .action(async (doc: string, options: any) => {
+        await importMarkdown(doc, options).catch(console.log);
+    });
+
 program.parse(process.argv);
 
 if (!program.args.length) program.help();
 
 async function generate(type: string, path: string, {output}: any) {
     console.log(`Generating documentation for ${path}`);
-    const procedure = await Procedure.fromYaml(path);
-    let exporter: Exporter;
+    const procedure = await importYamlStep(path);
+    let exporter: Exporter<Step>;
     console.log(`Selected output type: ${type}`);
     switch (type) {
         case "markdown":
@@ -49,4 +62,17 @@ async function generate(type: string, path: string, {output}: any) {
     }
     exporter.exportToDisk(output);
     console.log(`Documentation is now available in ${resolve(output)}`);
+}
+
+async function importMarkdown(path: string, {output = "./"}: any) {
+    const docs = await importMarkdownStep(path);
+    const separator = "subSteps";
+    for (const doc of docs) {
+        for (const step of doc.preOrder()) {
+            const path = resolve(output, ...new Array(step.depth()).fill(separator), sanitize(step.title)+'.yaml');
+            const exporter = new YamlExporter(step, separator);
+            mkdirSync(dirname(path), {recursive: true});
+            exporter.exportToDisk(path);
+        }
+    }
 }

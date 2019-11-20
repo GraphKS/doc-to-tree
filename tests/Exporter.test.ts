@@ -136,7 +136,7 @@ describe("YamlExporter", () => {
         const yaml = YamlExporter.export(step);
         const expected = `
 title: foo
-description:|
+description: |
 hello **world**
 steps:
   - ./foo-bar.yaml    
