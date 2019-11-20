@@ -17,9 +17,9 @@ export class DotExporter extends Exporter<Step> {
     public export(): string {
         const data = {
             title: this.step.title,
-            edges: this.step.preOrder().flatMap(step => step.nextSteps.map(step => ({
-                source: this.step.title,
-                target: step.title
+            edges: this.step.preOrder().flatMap(step => step.nextSteps.map(nextStep => ({
+                source: step.title,
+                target: nextStep.title
             })))
         };
         return template(data);
