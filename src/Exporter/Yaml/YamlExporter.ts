@@ -6,7 +6,7 @@ import sanitize = require("sanitize-filename");
 const templateDefinition = `
 title: {{{title}}}
 description: |
-{{{description}}}
+  {{{description}}}
 {{#if childrens}}
 steps:
 {{#each childrens}}

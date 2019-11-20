@@ -8,7 +8,6 @@ import axios from "axios";
 const stepSchema = {
     type: "object",
     properties: {
-        title: {type: "string"},
         description: {type: "string"},
         note: {type: "string"},
         authors: {
@@ -35,7 +34,7 @@ const stepSchema = {
             }
         }
     },
-    required: ["title", "type", "description"]
+    required: ["title", "description"]
 };
 
 const ajv = new Ajv();

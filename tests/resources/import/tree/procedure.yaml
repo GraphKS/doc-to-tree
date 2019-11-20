@@ -1,8 +1,8 @@
 type: "step"
-      title: "foo"
-      description: "bar"
-      authors:
-        - pierre
-      steps:
-        - childs/step1.yaml
-        - childs/step2.yaml
+title: "foo"
+description: "bar"
+authors:
+  - pierre
+steps:
+  - childs/step1.yaml
+  - childs/step2.yaml
