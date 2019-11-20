@@ -6,8 +6,9 @@ import sanitize = require("sanitize-filename");
 const templateDefinition = `
 title: {{{title}}}
 description: |
-  {{{description}}}
+  {{>DescriptionPartial}}
 {{#if childrens}}
+
 steps:
 {{#each childrens}}
   - {{../stepPathPrefix}}/{{{this}}}.yaml
@@ -15,7 +16,8 @@ steps:
 {{/if}}
 `;
 
-const template = Handlebars.compile(templateDefinition, {preventIndent: true});
+Handlebars.registerPartial('DescriptionPartial', '{{{description}}}');
+const template = Handlebars.compile(templateDefinition, {preventIndent: false});
 
 export class YamlExporter extends Exporter<Step> {
     public stepPathPrefix: string;
