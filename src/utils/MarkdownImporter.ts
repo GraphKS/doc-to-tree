@@ -37,7 +37,7 @@ ${token.text}
                 listState += 1;
                 break;
             case "list_item_start":
-                content += "\n"+" ".repeat(2 * listState) + "* ";
+                content += "\n" + " ".repeat(2 * listState) + "* ";
                 break;
             // case "list_item_end":
             //     content += "\n";
@@ -85,7 +85,13 @@ function tokenToSteps(depth: number, tokens: Array<Token>): Array<Step> {
 
 function importMarkdownString(markdown: string): Array<Step> {
     const tokens = lexer(markdown);
-    return tokenToSteps(1, tokens);
+    let steps = tokenToSteps(1, tokens);
+    if (steps.length == 0) {
+        // Some documentation don't start with a real title
+        const withTitle = [{type: "heading", "depth": 1, text: "Documentation"}, ...tokens];
+        steps = tokenToSteps(1, withTitle);
+    }
+    return steps;
 }
 
 export async function importMarkdownStep(path: string): Promise<Array<Step>> {
