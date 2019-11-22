@@ -1,6 +1,7 @@
 import {Exporter} from "../Exporter";
 import {Step} from "../../Step";
 import * as Handlebars from "handlebars";
+import {getScopedLogger} from "../../Logger";
 
 
 const templateDefinition = `
@@ -14,6 +15,7 @@ digraph "{{title}}" {
 const template = Handlebars.compile(templateDefinition.trim(), {preventIndent: true});
 
 export class DotExporter extends Exporter<Step> {
+    protected logger = getScopedLogger("Export", "Dot");
     public export(): string {
         const data = {
             title: this.step.title,
@@ -22,6 +24,7 @@ export class DotExporter extends Exporter<Step> {
                 target: nextStep.title
             })))
         };
+        this.logger.info(`About to export a .dot graph with ${data.edges.length} edges in it.`);
         return template(data);
     }
 

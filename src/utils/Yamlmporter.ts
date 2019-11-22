@@ -4,6 +4,7 @@ import {safeLoad} from "js-yaml";
 import {readFileSync} from "fs";
 import {dirname, resolve} from "path";
 import axios from "axios";
+import {getScopedLogger} from "../Logger";
 
 const stepSchema = {
     type: "object",
@@ -48,6 +49,8 @@ function loadYaml(yaml: string) {
 }
 
 export async function importYamlDistantFile(url: string) {
+    const logger = getScopedLogger("Import", "Yaml");
+    logger.info(`Importing distant file ${url}.`);
     const resp = await axios.get(url);
     const data = loadYaml(resp.data);
     const step = new Step(data);
@@ -67,7 +70,9 @@ export async function importYamlDistantFile(url: string) {
 }
 
 export async function importYamlLocalFile(path: string): Promise<Step> {
+    const logger = getScopedLogger("Import", "Yaml");
     const absPath = resolve(path);
+    logger.info(`Importing ${absPath}.`);
     const yamlString = readFileSync(absPath).toString();
     const data = loadYaml(yamlString);
     const step = new Step(data);

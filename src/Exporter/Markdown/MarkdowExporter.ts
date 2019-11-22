@@ -3,10 +3,11 @@ import {Exporter} from "../Exporter";
 import {readFileSync} from "fs";
 import {resolve} from "path";
 import {Step} from "../../Step";
+import {getScopedLogger} from "../../Logger";
 
 
 Handlebars.registerHelper("nestedTitle", (title: string, depth: number) => {
-    return [...Array(depth+1).fill(null).map(() => "#"), " ", title].join("");
+    return [...Array(depth + 1).fill(null).map(() => "#"), " ", title].join("");
 });
 
 Handlebars.registerHelper("anchorLink", (target: string) => {
@@ -19,6 +20,8 @@ const templateDefinition = readFileSync(resolve(resources, "template.handlebars"
 const template = Handlebars.compile(templateDefinition, {preventIndent: true});
 
 export class MarkdowExporter extends Exporter<Step> {
+    protected logger = getScopedLogger("Export", "Markdown");
+
     public export(): string {
         const data = {
             procedure: this.step.export(),
@@ -26,6 +29,7 @@ export class MarkdowExporter extends Exporter<Step> {
                 return step.export();
             })
         };
+        this.logger.info(`About to export a .md documentation with ${data.steps.length} steps in it.`);
         return template(data);
     }
 

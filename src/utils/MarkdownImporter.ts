@@ -3,6 +3,7 @@ import axios from "axios";
 import {readFileSync} from "fs";
 import {lexer} from "marked";
 import fm from "front-matter";
+import {getScopedLogger} from "../Logger";
 
 interface Token {
     type: string,
@@ -108,11 +109,14 @@ function importMarkdownString(markdown: string): Array<Step> {
 }
 
 export async function importMarkdownStep(path: string): Promise<Array<Step>> {
+    const logger = getScopedLogger("Import", "Markdown");
     let markdownString: string;
     if (path.startsWith("http")) {
+        logger.info(`Importing distant file ${path}.`);
         const resp = await axios.get(path);
         markdownString = resp.data;
     } else {
+        logger.info(`Importing file ${path}.`);
         markdownString = readFileSync(path).toString();
     }
     return importMarkdownString(markdownString);
