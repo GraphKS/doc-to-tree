@@ -9,9 +9,13 @@ import {importYamlStep} from "../utils/Yamlmporter";
 import {importMarkdownStep} from "../utils/MarkdownImporter";
 import {YamlExporter} from "../Exporter/Yaml/YamlExporter";
 import {mkdirSync} from "fs";
+import {Signale} from "signale";
+import {getLogger, setLogger} from "../Logger";
 import sanitize = require("sanitize-filename");
 
-const program = new Command("Logtopus");
+const program = new Command("Logtopus")
+    .option("-v, --verbose", "Increase verbosity");
+
 
 program
     .command("generate <type> <step>")
@@ -26,18 +30,21 @@ program
     .description("Generate the Yaml file structure from a markdown documentation")
     .option("-o, --output <output>", "output in a directory. Like: './output'")
     .action(async (doc: string, options: any) => {
+        if (options.verbose) setLogger(new Signale((<any>{logLevel: "debug"})));
         await importMarkdown(doc, options).catch(console.log);
     });
 
 program.parse(process.argv);
-
 if (!program.args.length) program.help();
+if (program.verbose) setLogger(new Signale((<any>{logLevel: "debug"})));
 
 async function generate(type: string, path: string, {output}: any) {
-    console.log(`Generating documentation for ${path}`);
+    const logger = getLogger();
+    logger.info(`Generating documentation for "${path}"`);
+    logger.start("Importing Yaml files...");
     const procedure = await importYamlStep(path);
     let exporter: Exporter<Step>;
-    console.log(`Selected output type: ${type}`);
+    logger.info(`Selected output type: ${type}`);
     switch (type) {
         case "markdown":
             exporter = new MarkdowExporter(procedure);
@@ -46,8 +53,8 @@ async function generate(type: string, path: string, {output}: any) {
             exporter = new DotExporter(procedure);
             break;
         default:
-            console.log("Invalid types");
-            console.log("Available types are: markdown, dot");
+            logger.error("Invalid types");
+            logger.error("Available types are: markdown, dot");
             return;
     }
     if (!output) {
@@ -60,19 +67,30 @@ async function generate(type: string, path: string, {output}: any) {
                 break;
         }
     }
+    logger.success("Documentation successfully parsed!");
+    logger.start("Exporting Documentation...");
     exporter.exportToDisk(output);
-    console.log(`Documentation is now available in ${resolve(output)}`);
+    logger.success("Documentation successfully exported!");
+    logger.complete(`Documentation is now available in "${resolve(output)}".`);
 }
 
 async function importMarkdown(path: string, {output = "./"}: any) {
+    const logger = getLogger();
+    logger.info(`Importing existing documention from "${path}"`);
+    logger.start("Import markdown...");
     const docs = await importMarkdownStep(path);
+    logger.success("Documentation successfully imported!");
+    logger.start("Generating Yaml files...");
     const separator = "subSteps";
     for (const doc of docs) {
         for (const step of doc.preOrder()) {
-            const path = resolve(output, ...new Array(step.depth()).fill(separator), sanitize(step.title)+'.yaml');
+            const outputPath = resolve(output, ...new Array(step.depth()).fill(separator), sanitize(step.title) + '.yaml');
             const exporter = new YamlExporter(step, separator);
-            mkdirSync(dirname(path), {recursive: true});
-            exporter.exportToDisk(path);
+            mkdirSync(dirname(outputPath), {recursive: true});
+            exporter.exportToDisk(outputPath);
         }
     }
+    logger.success("Documentation successfully imported!");
+    logger.complete(`Yaml import is now available in "${resolve(output)}" folder.`);
+
 }
