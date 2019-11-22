@@ -33,13 +33,14 @@
   },
   "dependencies": {
     "ajv": "^6.10.2",
-    "handlebars": "^4.5.2",
+    "handlebars": "^4.5.3",
     "lorem-ipsum": "^2.0.3",
     "js-yaml": "^3.13.1",
     "axios": "^0.19.0",
     "commander": "^4.0.1",
     "marked": "^0.7.0",
     "sanitize-filename": "^1.6.3",
-    "front-matter": "^3.0.2"
+    "front-matter": "^3.0.2",
+    "signale": "^1.4.0"
   }
 }
