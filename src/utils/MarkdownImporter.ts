@@ -2,7 +2,7 @@ import {Step} from "../Step";
 import axios from "axios";
 import {readFileSync} from "fs";
 import {lexer} from "marked";
-
+import fm from "front-matter";
 
 interface Token {
     type: string,
@@ -84,12 +84,25 @@ function tokenToSteps(depth: number, tokens: Array<Token>): Array<Step> {
 }
 
 function importMarkdownString(markdown: string): Array<Step> {
-    const tokens = lexer(markdown);
+    // The file might contain yaml front matter, we only want to parse the body
+    let tokens = lexer(markdown);
     let steps = tokenToSteps(1, tokens);
     if (steps.length == 0) {
         // Some documentation don't start with a real title
-        const withTitle = [{type: "heading", "depth": 1, text: "Documentation"}, ...tokens];
-        steps = tokenToSteps(1, withTitle);
+        // Let's try with yaml front matter
+        const frontMatter = fm<{ [attr: string]: string }>(markdown);
+        const attributes = frontMatter.attributes;
+        const frontMatterTitle = attributes.title ?? attributes.subject ?? attributes.mainTitle;
+        if (frontMatterTitle) {
+            tokens = lexer(frontMatter.body);
+            const withTitle = [{type: "heading", "depth": 1, text: frontMatterTitle}, ...tokens];
+            steps = tokenToSteps(1, withTitle);
+        } else {
+            // Even front matter is empty,
+            tokens = lexer(frontMatter.body);
+            const withTitle = [{type: "heading", "depth": 1, text: "Documentation"}, ...tokens];
+            steps = tokenToSteps(1, withTitle);
+        }
     }
     return steps;
 }

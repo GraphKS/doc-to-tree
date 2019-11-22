@@ -69,8 +69,15 @@ describe("MarkdownImport", () => {
 
 
     });
-    test("it import remote doc", async ()=>{
+    test("it import remote doc", async () => {
         const steps = await importMarkdownStep("https://raw.githubusercontent.com/markedjs/marked/master/README.md");
-        expect(steps).toHaveLength(1)
-    })
+        expect(steps).toHaveLength(1);
+    });
+    test("front matter", async () => {
+        const mdPath = resolve(__dirname, "resources", "import", "front-matter.md");
+        const step = await importMarkdownStep(mdPath);
+        expect(step).toHaveLength(1);
+        expect(step[0].title).toBe("Deploying Node.js apps");
+        expect(step[0].description).not.toMatch("Deploying Node.js apps");
+    });
 });
