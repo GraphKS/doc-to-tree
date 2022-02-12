@@ -33,7 +33,7 @@
     "typescript": "^3.7.2"
   },
   "dependencies": {
-    "ajv": "^6.10.2",
+    "ajv": "^6.12.3",
     "handlebars": "^4.5.3",
     "lorem-ipsum": "^2.0.3",
     "js-yaml": "^3.13.1",
